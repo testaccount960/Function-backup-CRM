@@ -1,0 +1,35 @@
+void automation.Fetch_Lead_Details1(int LeadID1)
+{
+try 
+{
+	// Convert Lead ID to string 
+	leadIDStr = LeadID1.toString();
+	// Fetch Lead record from Zoho CRM
+	response = zoho.crm.getRecordById("Leads",leadIDStr);
+	info "API Response: " + response;
+	if(response.contains("id"))
+	{
+		// Extracting key fields
+		Lead_Name = response.get("Full_Name");
+		Lead_Email = response.get("Email");
+		Lead_Phone = response.get("Phone");
+		Lead_Company = response.get("Company");
+		Lead_Status = response.get("Lead_Status");
+		// Logging details
+		info "Lead ID: " + LeadID1;
+		info "Lead Name: " + Lead_Name;
+		info "Email: " + Lead_Email;
+		info "Phone: " + Lead_Phone;
+		info "Company: " + Lead_Company;
+		info "Lead Status: " + Lead_Status;
+	}
+	else
+	{
+		info " No record found for Lead ID: " + LeadID1;
+	}
+}
+catch (e)
+{
+	info "Exception Occurred: " + e.toString();
+}
+}

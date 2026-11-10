@@ -1,0 +1,22 @@
+void automation.Send_Email_with_Attachment(Int lead_id)
+{
+headersMap = Map();
+headersMap.put("Accept","application/vnd.api+json");
+mp = Map();
+mp.put("from","development@evoluz.in");
+mp.put("to","tt3740370@gmail.com");
+mp.put("subject","subject line here");
+mp.put("template","577983000004745015");
+dataMap = Map();
+dataMap.put("data",mp);
+url = "https://www.zohoapis.in/crm/v3/Leads/577983000005464040/actions/send_mail";
+response = invokeurl
+[
+	url :url
+	type :POST
+	parameters:dataMap.toString()
+	headers:headersMap
+	connection:"template_crm"
+];
+info response;
+}

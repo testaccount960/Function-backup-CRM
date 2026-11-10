@@ -1,0 +1,22 @@
+void automation.fetchLeadDetails1(String leadId)
+{
+response = zoho.crm.getRecordById("Leads",leadId);
+if(response.contains("id"))
+{
+	lead_name = response.get("Full_Name");
+	lead_email = response.get("Email");
+	lead_phone = response.get("Phone");
+	lead_company = response.get("Company");
+	lead_status = response.get("Lead_Status");
+	info "Lead ID: " + leadId;
+	info "Lead Name: " + lead_name;
+	info "Email: " + lead_email;
+	info "Phone: " + lead_phone;
+	info "Company: " + lead_company;
+	info "Lead Status: " + lead_status;
+}
+else
+{
+	info "No record found for Lead ID: " + leadId;
+}
+}

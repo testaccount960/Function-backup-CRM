@@ -1,0 +1,4 @@
+void automation.update_first_name(Int lead_id)
+{
+update_rec = zoho.crm.updateRecord("Leads",lead_id,{"First_Name":"Test_Akash"});
+}

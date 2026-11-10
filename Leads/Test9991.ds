@@ -1,0 +1,65 @@
+void automation.Test9991(Int id)
+{
+lead_details = zoho.crm.getRecordById("Leads",id);
+// info lead_details;
+first_name = lead_details.getJSON("First_Name");
+info first_name;
+last_name = lead_details.getJSON("Last_Name");
+info last_name;
+email = lead_details.getJSON("Email");
+info email;
+DateTime = lead_details.getJSON("Schedule_Date_And_Time");
+info DateTime;
+phone = lead_details.getJSON("Phone");
+info phone;
+// //for generating refresh token//
+// m = map();
+// m.put("code", "1000.a2f9020a02c8bdb03af83fe43cabd26d.94e56273fba91446dcb3a7adb5a1dba7");
+// m.put("client_id", "1000.XUCFUWEHKY23BL6X4UGB5FF4RI1JSQ");
+// m.put("client_secret", "5d5440222ee1b5739f6af627e8af77e24cec09549d");
+// m.put("redirect_uri", "https://www.google.com/");
+// m.put("grant_type", "authorization_code");
+// res1 = invokeurl
+// [
+// 	url: "https://accounts.zoho.in/oauth/v2/token?"
+// 	type: POST
+// 	parameters: m
+// ];
+// info res1 ;
+// for generating access token
+m2 = Map();
+m2.put("refresh_token","1000.6b3c0cc7fbe3d9b2b957731fa99d545e.0362c3f7789ee0a443fb67c84059a513");
+m2.put("client_id","1000.XUCFUWEHKY23BL6X4UGB5FF4RI1JSQ");
+m2.put("client_secret","5d5440222ee1b5739f6af627e8af77e24cec09549d");
+m2.put("redirect_uri","https://www.google.com/");
+m2.put("grant_type","refresh_token");
+res2 = invokeurl
+[
+	url :"https://accounts.zoho.in/oauth/v2/token?"
+	type :POST
+	parameters:m2
+];
+info res2;
+access_token = res2.getJSON("access_token");
+info access_token;
+headers_data = Map();
+headers_data.put("Authorization","Zoho-oauthtoken " + access_token);
+response = invokeurl
+[
+	url :"https://www.zohoapis.in/bookings/v1/json/staffs"
+	type :GET
+	headers:headers_data
+	connection:"booking"
+];
+info response;
+appointment_details = zoho.bookings.getRecordById("staffs",203155000000032008,"booking");
+info appointment_details;
+info "Booking Details";
+bookingCreation_map = Map();
+param = Map();
+bookingCreation_map.put("name","test");
+bookingCreation_map.put("email",email);
+bookingCreation_map.put("phone_number",phone);
+create_booking = zoho.bookings.createAppointment(203155000000343219,DateTime,bookingCreation_map,203155000000032008,"Asia/Kolkata",true,"booking");
+info create_booking;
+}

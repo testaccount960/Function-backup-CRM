@@ -1,0 +1,100 @@
+void automation.convert_lead(Int leadId)
+{
+// Step 1: Get full Lead record
+lead = zoho.crm.getRecordById("Leads",leadId);
+company = lead.get("Company");
+account_name = lead.get("Account_Name");
+info "Company: " + company;
+// Step 2: Prepare Deal map
+dealMap = Map();
+dealMap.put("Deal_Name",company);
+dealMap.put("Stage","Qualification");
+dealMap.put("Account Name",account_name);
+dealMap.put("Pipeline","test");
+// Step 3: Prepare Contact map
+contactMap = Map();
+contactMap.put("First_Name",lead.get("First_Name"));
+contactMap.put("Last_Name",lead.get("Last_Name"));
+contactMap.put("Email",lead.get("Email"));
+contactMap.put("Phone",lead.get("Phone"));
+contactMap.put("Admin_Lead_ID",lead.get("id"));
+info contactMap;
+// Step 4: Prepare Account map
+accountMap = Map();
+accountMap.put("Account_Name",company);
+accountMap.put("Website",lead.get("Website"));
+accountMap.put("Industry",lead.get("Industry"));
+// Step 5: Assemble main data map
+dataMap = Map();
+dataMap.put("Deals",dealMap);
+dataMap.put("Contacts",contactMap);
+dataMap.put("Accounts",accountMap);
+// Step 6: Main conversion map
+conversionMap = Map();
+conversionMap.put("overwrite",true);
+// conversionMap.put("notify_lead_owner",false);
+// conversionMap.put("notify_new_entity_owner",true);
+conversionMap.put("data",dataMap);
+// Step 7: Convert Lead
+convertResp = zoho.crm.convertLead(leadId,conversionMap);
+info "Convert Response: " + convertResp;
+// Step 8: Extract IDs from response
+contactId = ifnull(convertResp.get("Contacts"),"");
+info contactId;
+accountId = ifnull(convertResp.get("Accounts"),"");
+dealId = ifnull(convertResp.get("Deals"),"");
+info "Lead Converted. Contact: " + contactId + ", Account: " + accountId + ", Deal: " + dealId;
+updatemap = Map();
+updatemap.put("Admin_Lead_ID",leadId.toString());
+response = zoho.crm.updateRecord("Contacts",contactId,updatemap);
+info response;
+//for mailmerge 
+contact = zoho.crm.getRecordById("Contacts",contactId);
+info contact;
+l_name = contact.get("Last_Name");
+contact_email = contact.get("Custom_Email");
+// Ensure 'Custom_Email' exists and is correctly spelled
+leadID = contact.get("Admin_Lead_ID");
+// Step 2: Generate the Referral Form URL and QR code
+form_url = "https://forms.zoho.in/evoluzglobalsolutions618/form/ReferralLeadForm?Referred_By_Lead_ID=" + leadID;
+qr_code_url = "https://api.qrserver.com/v1/create-qr-code/?data=" + form_url;
+info "Form URL: " + form_url;
+info "QR Code URL: " + qr_code_url;
+// Step 3: Continue only if email and lead ID are available
+if(contact_email != null && leadID != null)
+{
+	// Step 4: Prepare Mail Merge fields (must match merge tags in template)
+	mailMergeTemplateId = "s0vpe4a14518897f740d4992acd0f80b597f4";
+	// Your Mail Merge Template ID
+	fieldsMap = Map();
+	fieldsMap.put("id",contactId);
+	// Always required
+	fieldsMap.put("First_Name",l_name);
+	fieldsMap.put("QR_Code_Image",qr_code_url);
+	// Step 5: Wrap fields into merge structure
+	mergeMap = Map();
+	mergeMap.put("data",fieldsMap);
+	mergeValues = Map();
+	mergeValues.put("merge_data",mergeMap);
+	// Step 6: Merge and download the PDF
+	download_Pdf = zoho.writer.mergeAndDownload(mailMergeTemplateId,"pdf",mergeValues,"create_lead_mail_merge");
+	info "Merged PDF: " + download_Pdf;
+	mergeFields = zoho.writer.getAllFields("s0vpe4a14518897f740d4992acd0f80b597f4","create_lead_mail_merge");
+	info mergeFields;
+	// Step 7: Attach PDF to the contact record
+	attach_pdf = zoho.crm.attachFile("Contacts",contactId,download_Pdf);
+	// Step 8: Send email with the generated PDF
+	sendmail
+	[
+		from :zoho.loginuserid
+		to :contact_email
+		subject :"Thank You & Invite to Refer Someone"
+		message :"<p>Hello " + l_name + ",</p><p>Thank you for connecting with Evoluz!</p><p>Attached is your referral invitation. You can scan the QR code inside to refer someone easily.</p>"
+		Attachments :file:download_Pdf
+	]
+}
+else
+{
+	info "Email or Lead ID not found. Cannot send referral mail.";
+}
+}

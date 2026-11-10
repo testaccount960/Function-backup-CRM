@@ -1,0 +1,60 @@
+void automation.SP_add_tag_remove_tag(Int lead_id)
+{
+lead_details = zoho.crm.getRecordById("Leads",lead_id);
+info lead_details;
+multi_select = lead_details.get("Multi_Select_Custom_Field");
+info multi_select;
+tag = lead_details.get("Tag");
+info tag;
+tags_list = List();
+if(multi_select.size() == 0)
+{
+	for each  name in tag
+	{
+		alltag = name.getJSON("name");
+		info alltag;
+		tag1 = Map();
+		tag1.put("name",alltag);
+		tags_list.add(tag1);
+	}
+	param = Map();
+	param.put("tags",tags_list);
+	recordIDs = List();
+	recordIDs.add(lead_id);
+	param.put("ids",recordIDs);
+	res = invokeurl
+	[
+		url :"https://www.zohoapis.in/crm/v7/Leads/actions/remove_tags"
+		type :POST
+		parameters:param.toString()
+		connection:"crm"
+	];
+	info res;
+}
+else
+{
+	for each  rec in multi_select
+	{
+		if(rec == "Option 1")
+		{
+			tag1 = Map();
+			tag1.put("name",rec);
+			tag1.put("id","577983000010299089");
+			tags_list.add(tag1);
+		}
+		if(rec == "Option 2")
+		{
+			tag2 = Map();
+			tag2.put("name",rec);
+			tag2.put("id","577983000010299090");
+			tags_list.add(tag2);
+		}
+	}
+	tagsmap = Map();
+	tagsmap.put("Tag",tags_list);
+	info tagsmap;
+	update_rec = zoho.crm.updateRecord("Leads",lead_id,tagsmap);
+	info update_rec;
+	info "m hi hu be";
+}
+}

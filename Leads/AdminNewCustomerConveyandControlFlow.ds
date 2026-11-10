@@ -1,0 +1,29 @@
+void automation.AdminNewCustomerConveyandControlFlow(int lead_id)
+{
+leadDetails = zoho.crm.getRecordById("Leads",lead_id);
+// info leadDetails;#
+leadEmail = leadDetails.get("Email");
+leadPhone = leadDetails.get("Phone");
+// info leadEmail;
+// info leadPhone;
+existingContacts = zoho.crm.searchRecords("Contacts","(Email:equals:" + leadEmail + ") or (Phone:equals:" + leadPhone + ")");
+contactFullName = existingContacts.getJSON("Full_Name");
+info contactFullName;
+// info existingContacts;
+if(existingContacts.size() > 0)
+{
+	// Contact Exists - Create a New Deal Instead
+	contactID = existingContacts.get(0).get("id");
+	// 	info contactID;
+	dealData = Map();
+	dealData.put("Deal_Name",contactFullName + " - New Deal");
+	dealData.put("Stage","Qualification");
+	dealData.put("Amount","5000");
+	// Set default or get from Lead
+	dealData.put("Closing_Date",zoho.currentdate.addDay(30));
+	// 30 Days from today
+	dealData.put("Contact_Name",contactID);
+	// 	info dealData;
+	createdDeal = zoho.crm.createRecord("Deals",dealData);
+}
+}

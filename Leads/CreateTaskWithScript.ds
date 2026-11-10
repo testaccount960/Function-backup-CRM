@@ -1,0 +1,17 @@
+void automation.CreateTaskWithScript(Int lead_id)
+{
+leadDetails = zoho.crm.getRecordById("Leads",lead_id);
+leadOwner = leadDetails.getJSON("Owner");
+leadOwnerEmail = leadOwner.get("email");
+leadOwnerid = leadOwner.getJSON("id");
+mp = Map();
+mp.put("Owner","testing26122@gmail.com");
+mp.put("$se_module","Leads");
+mp.put("Subject","Follow Up on Deal Creation");
+mp.put("Due_Date",zoho.currentdate.addDay(1));
+mp.put("What_Id",lead_id);
+mp.put("Status","Not Started");
+mp.put("Priority","High");
+createTask = zoho.crm.createRecord("Tasks",mp);
+info createTask;
+}

@@ -1,0 +1,5 @@
+void automation.Create_contact_on_creation_of_lead1(int lead_id)
+{
+lead_details = zoho.crm.getRecordById("Leads",lead_id);
+info lead_details;
+}

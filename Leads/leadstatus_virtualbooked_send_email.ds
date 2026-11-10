@@ -1,0 +1,18 @@
+void automation.leadstatus_virtualbooked_send_email(Int lead_id)
+{
+lead_id = zoho.crm.getRecordById("Leads",lead_id);
+//info lead_id;
+full_name = lead_id.getJSON("Full_Name");
+info full_name;
+booking_id = lead_id.getJSON("Booking_ID");
+//info "Booking Id =  " + booking_id;
+customer_email = lead_id.getJSON("Email");
+//info "Customer Email = " + customer_email ;
+sendmail
+[
+	from :zoho.adminuserid
+	to :customer_email
+	subject :"Your Booking has Been Successfully Created!"
+	message :"<p><b>Dear " + full_name + ",</b><br></p><p>Thank you for booking with us! We are pleased to inform you that your event has been successfully created.<br></p><p>Please note that you will receive the meeting link and additional details once the event status is confirmed.<br></p><p>If you have any questions or need further assistance, feel free to reach out to us.<br></p><p>Thank you for choosing us, and we look forward to a successful meeting.<br></p><p></p><div>Best regards,<br></div><div>CEO<br></div><div>Plymouth Rock Travel Partners<br></div><div>[Contact Information]<br></div><p></p><div><br></div>"
+]
+}

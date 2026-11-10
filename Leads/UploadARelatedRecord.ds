@@ -1,0 +1,25 @@
+void automation.UploadARelatedRecord(Int lead_id)
+{
+leadDetails = zoho.crm.getRecordById("Leads",lead_id);
+firstName = leadDetails.get("First_Name");
+lastName = leadDetails.get("Last_Name");
+phone = leadDetails.get("Phone");
+email = leadDetails.get("Email");
+relatedContacts = zoho.crm.getRelatedRecords("Related_List_Label_1","Leads",lead_id);
+info relatedContacts.size();
+List1 = list();
+for each  contact in relatedContacts
+{
+	contactId = contact.get("id");
+	updateData = Map();
+	updateData.put("First_Name",firstName);
+	updateData.put("Last_Name",lastName);
+	updateData.put("Phone",phone);
+	updateData.put("Email",email);
+	// List1.add(updateData);
+	info updateData;
+	info contactId;
+	resp = zoho.crm.updateRecord("Contacts",contactId,updateData);
+	info resp;
+}
+}

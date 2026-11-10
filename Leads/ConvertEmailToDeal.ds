@@ -1,0 +1,9 @@
+void automation.ConvertEmailToDeal(int lead_id)
+{
+leadDetails = zoho.crm.getRecordById("Leads",lead_id);
+dealName = leadDetails.get("First_Name") + " " + leadDetails.get("Last_Name");
+dealMap = Map();
+dealMap.put("Deal_Name",dealName);
+dealResponse = zoho.crm.createRecord("Deals",dealMap);
+info dealResponse;
+}

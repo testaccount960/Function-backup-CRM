@@ -1,0 +1,21 @@
+void automation.Admin_Send_Email_Using_Script(int lead_id)
+{
+lead_details = zoho.crm.getRecordById("Leads",lead_id);
+owner = lead_details.getJSON("Owner");
+info owner;
+owner_email = owner.getJSON("email");
+owner_name = owner.getJSON("name");
+lead_name = lead_details.getJSON("Last_Name");
+lead_email = lead_details.getJSON("Email");
+mailData = {"data":{{"from":{"user_name":owner_name,"email":owner_email},"to":{{"user_name":lead_name,"email":lead_email}},"template":{"id":"577983000018263001"}}}};
+mailUrl = "https://www.zohoapis.in/crm/v4/Leads/" + lead_id + "/actions/send_mail";
+body = mailData.toString();
+mailRequest = invokeurl
+[
+	url :mailUrl
+	type :POST
+	parameters:body
+	connection:"crm"
+];
+info mailRequest;
+}

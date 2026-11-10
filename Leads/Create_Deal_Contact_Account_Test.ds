@@ -1,0 +1,31 @@
+void automation.Create_Deal_Contact_Account_Test(Int leadId)
+{
+leadDetails = zoho.crm.getRecordById("Leads",leadId);
+// Create Account with minimal info (just Company name)
+accountMap = Map();
+accountMap.put("Account_Name",leadDetails.get("Company"));
+createdAccount = zoho.crm.createRecord("Accounts",accountMap);
+accountId = createdAccount.get("id");
+// Create Contact with minimal info (First and Last Name + link to Account)
+contactMap = Map();
+contactMap.put("First_Name",leadDetails.get("First_Name"));
+contactMap.put("Last_Name",leadDetails.get("Last_Name"));
+contactMap.put("Account_Name",accountId);
+createdContact = zoho.crm.createRecord("Contacts",contactMap);
+contactId = createdContact.get("id");
+// Create Deal with minimal info (Deal Name + link to Account and Contact)
+dealMap = Map();
+dealMap.put("Deal_Name",leadDetails.get("Company") + " Deal");
+dealMap.put("Account_Name",accountId);
+dealMap.put("Contact_Name",contactId);
+createdDeal = zoho.crm.createRecord("Deals",dealMap);
+dealId = createdDeal.get("id");
+// Optional: update Lead with links (only if you have these custom lookup fields)
+updateMap = Map();
+updateMap.put("Created_Account",accountId);
+updateMap.put("Created_Contact",contactId);
+updateMap.put("Created_Deal",dealId);
+t = zoho.crm.updateRecord("Leads",leadId,updateMap);
+info t;
+//info "Created Account, Contact, and Deal with minimal fields.";
+}

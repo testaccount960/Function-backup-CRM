@@ -1,0 +1,24 @@
+void automation.conversion_deal_from_lead(Int Lead_id)
+{
+lead_deatails = zoho.crm.getRecordById("Leads",Lead_id);
+// info lead_deatails;
+first_name = lead_deatails.getJSON("First_Name");
+info first_name;
+last_name = lead_deatails.getJSON("Last_Name");
+info last_name;
+deal_name = first_name + " " + last_name;
+email = lead_deatails.getJSON("Email1");
+info email;
+phone = lead_deatails.getJSON("Phone_Number");
+info phone;
+company = lead_deatails.getJSON("Company_Name");
+info company;
+deal_map = Map();
+deal_map.put("Deal_Name",company);
+deal_map.put("Phone",phone);
+//deal_map.put("Billing Country",Company_Name);
+deal_map.put("Email1",email);
+info deal_map;
+create_deal = zoho.crm.createRecord("Deals",deal_map);
+info create_deal;
+}

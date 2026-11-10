@@ -1,0 +1,22 @@
+void automation.get_email_of_Contact_relatedlist_of_lead(int Lead_Id)
+{
+res = zoho.crm.getRelatedRecords("Related_List_Label_1","Leads",Lead_Id);
+//  info res;
+// contact_id = res.getJSON("id");
+if(res.size() > 0)
+{
+	for each  contac_id in res
+	{
+		ID = contac_id.get("id");
+		// info ID;
+		details = zoho.crm.getRecordById("Contacts",ID);
+		// 	 info details;
+	}
+	contact_detail = res.get(0);
+	email = contact_detail.getJSON("Email");
+	info email;
+	leadinfo = {"Email":email};
+	response = zoho.crm.updateRecord("Leads",Lead_Id,leadinfo);
+	info response;
+}
+}

@@ -1,0 +1,22 @@
+void automation.Test_task_for_AV_SIR()
+{
+lead_id = 577983000007612408;
+Lead_details = zoho.crm.getRecordById("Leads",lead_id);
+//info Lead_details ;
+layout_details = Lead_details.getJSON("Layout");
+//info  layout_details;
+layout_info = layout_details.getJSON("id");
+//info layout_info ;
+lead_map = Map();
+lead_map.put("First_Name","New Test");
+lead_map.put("Last_Name","004");
+lead_map.put("Phone","68990290322");
+lead_map.put("Email","Newtest004@gmail.com");
+lead_map.put("id","577983000007612408");
+//res1 = zoho.crm.createRecord("Leads",lead_map);
+//update_record_dets = zoho.crm.updateRecord("Leads",lead_id,lead_map);
+// info update_record_dets ;
+res = zoho.crm.invokeConnector("crm.delete",lead_map);
+//res = zoho.crm.upsert("Leads",lead_map);
+info res;
+}

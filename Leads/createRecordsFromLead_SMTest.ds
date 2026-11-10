@@ -1,0 +1,35 @@
+void automation.createRecordsFromLead_SMTest(Int leadId)
+{
+// Fetch Lead details
+leadDetails = zoho.crm.getRecordById("Leads",leadId);
+// 1. Create Account
+accountMap = Map();
+accountMap.put("Account_Name",leadDetails.get("Company"));
+accountMap.put("Phone",leadDetails.get("Phone"));
+accountMap.put("Email",leadDetails.get("Email"));
+accountResponse = zoho.crm.createRecord("Accounts",accountMap);
+accountId = accountResponse.get("id");
+// 2. Create Contact
+contactMap = Map();
+contactMap.put("First_Name",leadDetails.get("First_Name"));
+contactMap.put("Last_Name",leadDetails.get("Last_Name"));
+contactMap.put("Email",leadDetails.get("Email"));
+contactMap.put("Phone",leadDetails.get("Phone"));
+contactMap.put("Account_Name",accountId);
+// Link to Account
+contactResponse = zoho.crm.createRecord("Contacts",contactMap);
+contactId = contactResponse.get("id");
+// 3. Create Deal
+dealMap = Map();
+dealMap.put("Deal_Name","Deal with " + leadDetails.get("Company"));
+dealMap.put("Account_Name",accountId);
+dealResponse = zoho.crm.createRecord("Deals",dealMap);
+dealId = dealResponse.get("id");
+// 4. Update Lead with created record references (if lookup fields exist)
+updateMap = Map();
+updateMap.put("Accounts",accountId);
+// Custom field
+updateMap.put("Contact",contactId);
+// Custom field
+zoho.crm.updateRecord("Leads",leadId,updateMap);
+}

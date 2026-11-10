@@ -1,0 +1,52 @@
+void automation.Admin_Create_Deal_Account_Contact(Int id)
+{
+leadId = input.id;
+// Fetch Lead details
+leadDetails = zoho.crm.getRecordById("Leads",leadId);
+// Extract only required fields
+firstName = ifnull(leadDetails.get("First_Name"),"");
+lastName = ifnull(leadDetails.get("Last_Name"),"");
+phone = leadDetails.get("Phone");
+// Owner of the lead
+owner = leadDetails.get("Owner").get("id");
+// Step 1: Create Account (using last name as account name)
+accountMap = Map();
+accountMap.put("Account_Name",firstName + " " + lastName + "'s Account");
+accountMap.put("Phone",phone);
+accountMap.put("Owner",owner);
+accountCreate = zoho.crm.createRecord("Accounts",accountMap);
+accountId = accountCreate.get("id");
+// Step 2: Create Contact
+contactMap = Map();
+contactMap.put("First_Name",firstName);
+contactMap.put("Last_Name",lastName);
+contactMap.put("Phone",phone);
+contactMap.put("Account_Name",{"id":accountId});
+contactMap.put("Owner",owner);
+contactCreate = zoho.crm.createRecord("Contacts",contactMap);
+contactId = contactCreate.get("id");
+// Step 3: Create Deal
+dealMap = Map();
+dealMap.put("Deal_Name","Deal for " + lastName);
+dealMap.put("Stage","Qualification");
+// Default or required stage
+dealMap.put("Account_Name",{"id":accountId});
+dealMap.put("Owner",owner);
+dealCreate = zoho.crm.createRecord("Deals",dealMap);
+dealId = dealCreate.get("id");
+// Step 4: Add Note to Lead for visibility
+noteContent = "Created Records:\nAccount ID: " + accountId + "\nContact ID: " + contactId + "\nDeal ID: " + dealId;
+noteMap = Map();
+noteMap.put("Note_Title","Lead Conversion Summary");
+noteMap.put("Note_Content",noteContent);
+noteMap.put("Parent_Id",leadId);
+noteMap.put("se_module","Leads");
+noteCreate = zoho.crm.createRecord("Notes",noteMap);
+// 8. Update the Lead to link the records
+// This makes them appear in the Lead's related lists.
+updateLeadMap = Map();
+updateLeadMap.put("Account_Name",accountId);
+updateLeadMap.put("Contact_Name",contactId);
+updateLeadMap.put("Deal_Name",dealId);
+zoho.crm.updateRecord("Leads",leadId,updateLeadMap);
+}

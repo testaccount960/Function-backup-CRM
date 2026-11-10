@@ -1,0 +1,87 @@
+void automation.create_new_lead(String leadId)
+{
+response = zoho.crm.getRecordById("Leads",leadId);
+//	info response;
+first_name = response.getJSON("First_Name");
+info first_name;
+last_name = response.getJSON("Last_Name");
+info last_name;
+email = response.getJSON("Email");
+info email;
+phone = response.getJSON("Phone");
+info phone;
+company = response.getJSON("Company");
+info company;
+leadInfo = Map();
+leadInfo.put("First_Name",first_name);
+leadInfo.put("Last_Name",last_name);
+leadInfo.put("Email",email);
+leadInfo.put("Phone",phone);
+leadInfo.put("Company",company);
+response = zoho.crm.createRecord("Leads",leadInfo);
+info response;
+// //Fetch records from Contacts module
+// contactsList = zoho.crm.getRecords("Contacts",1,20);
+// for each  contact in contactsList
+// {
+// 	info contact.get("Full_Name");
+// 	info contact.get("Email");
+// 	info contact.get("Phone");
+// }
+// //Fetch a Record Using Record ID
+// recordId = "577983000003994001";
+// record = zoho.crm.getRecordById("Contacts",recordId);
+// info record;
+// name = record.get("Full_Name");
+// email = record.get("Email");
+// info name;
+// info email;
+// accountId = "577983000010651128";
+// relatedContacts = zoho.crm.getRelatedRecords("Contacts","Accounts",accountId);
+// //Get Contacts Related to an Account
+// info contact.get("Full_Name");
+// info contact.get("Email");
+// info relatedContacts;
+// //Search Records in Zoho CRM
+// searchCriteria = "(Email:nitin.rana@evoluz.tech)";
+// leadResults = zoho.crm.searchRecords("Leads",searchCriteria);
+// for each  lead in leadResults
+// {
+// 	info lead.get("Full_Name");
+// 	info lead.get("Email");
+// }
+// //Update a Record in Zoho CRM
+// leadId = "577983000003994001";
+// updateData = Map();
+// updateData.put("Phone","9123456780");
+// updateData.put("Company","Updated Company Name");
+// updateResponse = zoho.crm.updateRecord("Leads",leadId,updateData);
+// info updateResponse;
+create_map = Map();
+create_map.put("First_Name",first_name);
+create_map.put("Last_Name",last_name);
+create_map.put("Email",email);
+create_map.put("Phone",phone);
+create_contact = zoho.crm.createRecord("Contacts",create_map);
+//info create_contact;
+create_contact_id = create_contact.getJSON("id");
+//attachment get method
+attachment = zoho.crm.getRelatedRecords("Attachments","Leads",leadId);
+info attachment;
+info attachment.size();
+if(attachment.size() > 0)
+{
+	file_id = attachment.getJSON("id");
+	info file_id;
+	url = "https://www.zohoapis.in/crm/v7/Leads/" + leadId + "/Attachments/" + file_id;
+	getdownload_file = invokeurl
+	[
+		url :url
+		type :GET
+		connection:"crm_oauth_connection"
+	];
+	info getdownload_file;
+	response = zoho.crm.attachFile("Contacts",create_contact_id,getdownload_file);
+	info response;
+}
+}

@@ -1,0 +1,29 @@
+void automation.diksha_test_task(Int leadId)
+{
+lead = zoho.crm.getRecordById("Leads",leadId);
+info lead;
+leadEmail = lead.get("Email");
+info leadEmail;
+contacts = zoho.crm.searchRecords("Contacts","(Email:equals:" + leadEmail + ")");
+info contacts;
+if(contacts.size() > 0)
+{
+	contactId = contacts.get(0).get("id");
+	info contactId;
+	updateMap = Map();
+	updateMap.put("lead_lookup",leadId);
+	updaterecords = zoho.crm.updateRecord("Contacts",contactId,updateMap);
+	info updaterecords;
+}
+else
+{
+	contactMap = Map();
+	contactMap.put("First_Name",lead.get("First_Name"));
+	contactMap.put("Last_Name",lead.get("Last_Name"));
+	contactMap.put("Email",leadEmail);
+	contactMap.put("Phone",lead.get("Phone"));
+	contactMap.put("lead_lookup",leadId);
+	newContact = zoho.crm.createRecord("Contacts",contactMap);
+	info newContact;
+}
+}

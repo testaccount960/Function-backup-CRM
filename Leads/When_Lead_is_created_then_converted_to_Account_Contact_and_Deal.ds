@@ -1,0 +1,66 @@
+void automation.When_Lead_is_created_then_converted_to_Account_Contact_and_Deal(Int lead_id)
+{
+// Step 1: Get Lead Details
+lead_data = zoho.crm.getRecordById("Leads",lead_id);
+// info lead_data;
+// Extract fields safely
+get_Last_Name = lead_data.get("Last_Name");
+if(get_Last_Name == null || get_Last_Name == "")
+{
+	get_Last_Name = "Unknown";
+}
+get_First_Name = lead_data.get("First_Name");
+if(get_First_Name == null)
+{
+	get_First_Name = "";
+}
+get_email = lead_data.get("Email");
+get_phone = lead_data.get("Phone");
+company_name = lead_data.get("Company");
+if(company_name == null || company_name == "")
+{
+	company_name = "No Company";
+}
+account_id = "";
+create_account = false;
+// Step 2: Check for existing Account
+existing_accounts = zoho.crm.searchRecords("Accounts","(Account_Name:equals:" + company_name + ")");
+if(existing_accounts != null && existing_accounts.size() > 0)
+{
+	info "Existing account found.";
+	account_id = existing_accounts.get(0).get("id");
+}
+else
+{
+	info "No existing account found. Will create new one.";
+	create_account = true;
+}
+// Step 3: Create Account if needed
+if(create_account)
+{
+	accountsmp = Map();
+	accountsmp.put("Account_Name",company_name);
+	accountsmp.put("Phone",get_phone);
+	account_response = zoho.crm.createRecord("Accounts",accountsmp);
+	info account_response;
+	account_id = account_response.get("id");
+}
+// Step 4: Create Contact
+contactmp = Map();
+contactmp.put("Last_Name",get_Last_Name);
+contactmp.put("First_Name",get_First_Name);
+contactmp.put("Email",get_email);
+contactmp.put("Phone",get_phone);
+contactmp.put("Account_Name",account_id);
+contact_response = zoho.crm.createRecord("Contacts",contactmp);
+info contact_response;
+// Step 5: Create Deal
+dealsmp = Map();
+dealsmp.put("Deal_Name",get_First_Name + " " + get_Last_Name);
+dealsmp.put("Stage","Qualification");
+dealsmp.put("Email",get_email);
+dealsmp.put("Phone",get_phone);
+dealsmp.put("Account_Name",account_id);
+deal_response = zoho.crm.createRecord("Deals",dealsmp);
+info deal_response;
+}

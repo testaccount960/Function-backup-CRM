@@ -1,0 +1,44 @@
+void automation.Admin_lead_creation(Int lead_id)
+{
+leadDetails = zoho.crm.getRecordById("Leads",lead_id);
+// info leadDetails;
+get_Last_Name = leadDetails.get("Last_Name");
+get_First_Name = leadDetails.get("First_Name");
+get_email = leadDetails.get("Email");
+get_phone = leadDetails.get("Phone");
+full_name = get_First_Name + " " + get_Last_Name;
+contactmp = Map();
+//contactmp.put("Full_name",full_name);
+contactmp.put("Last_Name",get_Last_Name);
+contactmp.put("First_Name",get_First_Name);
+contactmp.put("Email",get_email);
+contactmp.put("Phone",get_phone);
+contactmp.put("Lead",lead_id);
+// info contactmp;
+response = zoho.crm.createRecord("Contacts",contactmp);
+// info response;
+resp1 = response.get("Contacts");
+// info resp1;
+dealsmp = Map();
+dealsmp.put("Deal_Name",full_name);
+//dealsmp.put("Last_Name",get_Last_Name);
+//dealsmp.put("First_Name",get_First_Name);
+dealsmp.put("Email",get_email);
+dealsmp.put("Lead",lead_id);
+dealsmp.put("Phone",get_phone);
+response2 = zoho.crm.createRecord("Deals",dealsmp);
+// info response2;
+resp2 = response2.get("Deals");
+// info resp2;
+accountsmp = Map();
+accountsmp.put("Account_Name",full_name);
+// accountsmp.put("Last_Name", get_Last_Name);
+// accountsmp.put("First_Name", get_First_Name);
+accountsmp.put("Email",get_email);
+accountsmp.put("Phone",get_phone);
+accountsmp.put("Lead",lead_id);
+response3 = zoho.crm.createRecord("Accounts",accountsmp);
+// info response3;
+resp3 = response3.get("Accounts");
+// info resp3;
+}

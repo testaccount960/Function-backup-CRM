@@ -1,0 +1,38 @@
+void automation.Create_Deal_Acc_Cont(Int leadId)
+{
+// 1. Get the Lead ID and record
+leadInfo = zoho.crm.getRecordById("Leads",leadId);
+// 2. Create Account
+accountData = Map();
+accountData.put("Account_Name",leadInfo.get("Company"));
+accountResp = zoho.crm.createRecord("Accounts",accountData);
+info accountResp;
+accountId = accountResp.get("id");
+// info accountId;
+// // 3. Create Contact
+// contactData = Map();
+// contactData.put("First_Name",leadInfo.get("First_Name"));
+// contactData.put("Last_Name",leadInfo.get("Last_Name"));
+// contactData.put("Email",leadInfo.get("Email"));
+// contactData.put("Account_Name",{"id":accountId});
+// contactResp = zoho.crm.createRecord("Contacts",contactData);
+// info contactResp;
+// contactId = contactResp.get("id");
+// info contactId;
+// // 4. Create Deal
+// dealData = Map();
+// dealData.put("Deal_Name","Deal for " + leadInfo.get("Company"));
+// //dealData.put("Amount", leadInfo.get("Annual_Revenue"));
+// //dealData.put("Stage", "Qualification"); // adjust based on your pipeline
+// dealData.put("Account_Name",{"id":accountId});
+// dealResp = zoho.crm.createRecord("Deals",dealData);
+// info dealResp;
+// dealId = dealResp.get("id");
+// info dealId;
+// 5. Update Lead with lookup fields to link back
+updateMap = Map();
+updateMap.put("Account_Lookup",accountId);
+// updateMap.put("Contact_Lookup",contactId);
+// updateMap.put("Deal_Lookup",dealId);
+updateResp = zoho.crm.updateRecord("Leads",leadId,updateMap);
+}

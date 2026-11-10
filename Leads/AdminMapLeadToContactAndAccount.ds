@@ -1,0 +1,22 @@
+void automation.AdminMapLeadToContactAndAccount(int lead_id)
+{
+leadDetails = zoho.crm.getRecordById("Leads",lead_id);
+contactMap = Map();
+contactMap.put("Last_Name",leadDetails.get("Last_Name"));
+contactMap.put("First_Name",leadDetails.get("First_Name"));
+contactMap.put("Email",leadDetails.get("Email"));
+contactMap.put("Phone",leadDetails.get("Phone"));
+contactMap.put("Lead_Source",leadDetails.get("Lead_Source"));
+contactMap.put("Description",leadDetails.get("Description"));
+contactMap.put("Lead_Status",leadDetails.get("Lead_Status"));
+contactResponse = zoho.crm.createRecord("Contacts",contactMap);
+info contactResponse;
+accountName = leadDetails.get("First_Name") + " " + leadDetails.get("Last_Name");
+accountMap = Map();
+accountMap.put("Account_Name",accountName);
+accountMap.put("Phone",leadDetails.get("Phone"));
+accountMap.put("Email_1",leadDetails.get("Email"));
+accountMap.put("Description",leadDetails.get("Description"));
+accountResponse = zoho.crm.createRecord("Accounts",accountMap);
+info accountMap;
+}

@@ -1,0 +1,45 @@
+void automation.Convert_lead_to_contact_account_deal(Int lead_id)
+{
+lead_id = zoho.crm.getRecordById("Leads",lead_id);
+//info lead_id ;
+first_name = lead_id.getJSON("First_Name");
+info "First name = " + first_name;
+last_name = lead_id.getJSON("Last_Name");
+info "Last Name = " + last_name;
+email = lead_id.getJSON("Email");
+info "Email = " + email;
+phone = lead_id.getJSON("Phone_Number");
+info "Phone Number = " + phone;
+lead_stage = lead_id.getJSON("Stage");
+info "Lead Stage = " + lead_stage;
+contact_map = Map();
+Other = Map();
+contact_map.put("First_Name",first_name);
+contact_map.put("Last_Name",last_name);
+contact_map.put("Email",email);
+contact_map.put("Phone_Number",phone);
+contact_map.put("lead_lookup",lead_id);
+create_contact = zoho.crm.createRecord("Contacts",contact_map);
+info create_contact;
+info "stage1";
+account_map = Map();
+other = Map();
+account_map.put("Account_Name",first_name + last_name);
+account_map.put("Email_1",email);
+account_map.put("Phone",phone);
+account_map.put("lead_lookup",lead_id);
+create_account = zoho.crm.createRecord("Accounts",account_map);
+info create_account;
+Deal_map = Map();
+other = Map();
+Deal_map.put("Deal_Name",first_name);
+Deal_map.put("Account_Name",first_name + last_name);
+Deal_map.put("Email",email);
+Deal_map.put("Phone",phone);
+Deal_map.put("Lead_Stage",lead_stage);
+Deal_map.put("lead_lookup",lead_id);
+create_deal = zoho.crm.createRecord("Deals",Deal_map);
+info create_deal;
+blueprint_var = zoho.crm.createRecord("Deals",Deal_map,{"trigger":{"blueprint"}});
+info blueprint_var;
+}

@@ -1,0 +1,68 @@
+void automation.Annu_lead_convert_into_contact_account_deal(Int Lead_Id)
+{
+Lead_Detail = zoho.crm.getRecordById("Leads",Lead_Id);
+info Lead_Detail;
+First_Name = Lead_Detail.getJSON("First_Name");
+Last_Name = Lead_Detail.getJSON("Last_Name");
+Email = Lead_Detail.getJSON("Email1");
+Company = Lead_Detail.getJSON("Company_Name");
+Lead_Source = Lead_Detail.getJSON("Lead_Source");
+Phone = Lead_Detail.getJSON("Phone");
+Street = Lead_Detail.getJSON("Street");
+State = Lead_Detail.getJSON("State");
+City = Lead_Detail.getJSON("City");
+Zip_Code = Lead_Detail.getJSON("Zip_Code");
+Country = Lead_Detail.getJSON("Country");
+///////////////////
+accountMap = Map();
+accountMap.put("Account_Name",Company);
+accountMap.put("Phone",Phone);
+accountMap.put("Email_1",Email);
+accountMap.put("Billing_Street",Street);
+accountMap.put("Billing_State",State);
+accountMap.put("Billing_Country",Country);
+accountMap.put("Billing_Code",Zip_Code);
+accountMap.put("Billing_City",City);
+info accountMap;
+create_account = zoho.crm.createRecord("Accounts",accountMap);
+info create_account;
+account_Id = create_account.get("id");
+info account_Id;
+///////////////////////
+contactMap = Map();
+contactMap.put("First_Name",First_Name);
+contactMap.put("Last_Name",Last_Name);
+contactMap.put("Email",Email);
+contactMap.put("Phone",Phone);
+contactMap.put("Mailing_Street",Street);
+contactMap.put("Mailing_State",State);
+contactMap.put("Mailing_City",City);
+contactMap.put("Mailing_Zip",Zip_Code);
+contactMap.put("Mailing_Country",Country);
+// 	contactMap.put("Annual_sales_volume_USD",Annual_salary);
+// 	search this contact is created or not in contact module
+create_contact = zoho.crm.createRecord("Contacts",contactMap);
+info create_contact;
+contact_Id = create_contact.getJSON("id");
+info contact_Id;
+///////////////////////
+//  create deal 
+dealMap = Map();
+Deal_name = Last_Name + " " + Company;
+dealMap.put("Deal_Name",Company);
+dealMap.put("Stage","Custom Order");
+dealMap.put("Phone",Phone);
+dealMap.put("City",City);
+dealMap.put("Street",Street);
+dealMap.put("State",State);
+dealMap.put("Zip_Code",Zip_Code);
+dealMap.put("Country",Country);
+dealMap.put("Email1",Email);
+//dealMap.put("Admin_Lead_ID",Lead_Id);
+//	dealMap.put("Admin_Contact_ID",contact_Id);
+//	dealMap.put("Admin_Account_ID",account_Id);
+info dealMap;
+create_deal = zoho.crm.createRecord("Deals",dealMap);
+info create_deal;
+convert_lead = zoho.crm.convertLead(Lead_Id);
+}

@@ -1,0 +1,19 @@
+void automation.CheckAndCreateContact(Int lead_id)
+{
+leadDetails = zoho.crm.getRecordById("Leads",lead_id);
+phone = leadDetails.get("Phone");
+searchCriteria = "(Phone:equals:" + phone + ")";
+searchContacts = zoho.crm.searchRecords("Contacts",searchCriteria);
+info searchContacts.size();
+if(searchContacts.size() == 0)
+{
+	newContactMap = Map();
+	newContactMap.put("Last_Name",leadDetails.get("Last_Name"));
+	newContactMap.put("First_Name",leadDetails.get("First_Name"));
+	newContactMap.put("Email",leadDetails.get("Email"));
+	newContactMap.put("Phone",leadDetails.get("Phone"));
+	newContactMap.put("lead_lookup",lead_id);
+	createContactResponse = zoho.crm.createRecord("Contacts",newContactMap,{"trigger":{"workflow"}});
+	info createContactResponse;
+}
+}

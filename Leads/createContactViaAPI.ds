@@ -1,0 +1,86 @@
+void automation.createContactViaAPI(Int lead_id)
+{
+// refresh_token = Map();
+// refresh_token.put("grant_type","authorization_code");
+// refresh_token.put("client_id","1000.7FO682ZHZAI8Q2MQA1Z757RMZ35NNO");
+// refresh_token.put("client_secret","d3e9ebf110bf9cb9803110477aa8c5eefb01264d8f");
+// refresh_token.put("redirect_uri","https://google.com");
+// refresh_token.put("code","1000.d3eead7f26ae3c8c30e1da4fbed9683f.a0a883f01214c3f62e2359979b96aa83");
+// generate_refresh_token = invokeurl
+// [
+// 	url: "https://accounts.zoho.in/oauth/v2/token"
+// 	type: POST
+// 	parameters: refresh_token
+// ];
+// info generate_refresh_token;
+// get access token
+accessToken = Map();
+accessToken.put("refresh_token","1000.c4821fa18c73b6c0ba6f6aa0590e6fb1.05f67014b9a9874b08b0fd6617673365");
+accessToken.put("client_id","1000.7FO682ZHZAI8Q2MQA1Z757RMZ35NNO");
+accessToken.put("client_secret","d3e9ebf110bf9cb9803110477aa8c5eefb01264d8f");
+accessToken.put("grant_type","refresh_token");
+generate_access_token = invokeurl
+[
+	url :"https://accounts.zoho.in/oauth/v2/token"
+	type :POST
+	parameters:accessToken
+];
+access_token = generate_access_token.get("access_token");
+info generate_access_token;
+getLeadDetails = zoho.crm.getRecordById("Leads",lead_id);
+contactId = getLeadDetails.get("Contact_Id");
+// header
+headers_map = Map();
+headers_map.put("Authorization","Zoho-oauthtoken " + access_token);
+headers_map.put("Content-Type","application/json");
+// ONE clean if/else
+if(contactId.isNull())
+{
+	// create contact
+	contactMap = Map();
+	contactMap.put("Last_Name",getLeadDetails.get("Last_Name"));
+	contactMap.put("Email",getLeadDetails.get("Email"));
+	contactMap.put("Phone",getLeadDetails.get("Phone"));
+	contactList = List();
+	contactList.add(contactMap);
+	data_map = Map();
+	data_map.put("data",contactList);
+	createContact = invokeurl
+	[
+		url :"https://www.zohoapis.in/crm/v2/Contacts"
+		type :post
+		body:data_map.toString()
+		headers:headers_map
+	];
+	info createContact;
+	contact_id = createContact.get("data").get(0).get("details").get("id");
+	// update lead with contact id
+	updateMap = Map();
+	updateMap.put("Contact_Id",{"id":contact_id});
+	updateResp = zoho.crm.updateRecord("Leads",lead_id,updateMap);
+	info updateResp;
+}
+else
+{
+	// extract ID from lookup object
+	existingContactId = contactId.get("id");
+	updateContactMap = Map();
+	updateContactMap.put("id",existingContactId);
+	// sync fields from Lead to Contact
+	updateContactMap.put("Last_Name",getLeadDetails.get("Last_Name"));
+	updateContactMap.put("Email",getLeadDetails.get("Email"));
+	updateContactMap.put("Phone",getLeadDetails.get("Phone"));
+	updateList = List();
+	updateList.add(updateContactMap);
+	payload = Map();
+	payload.put("data",updateList);
+	updateContactResp = invokeurl
+	[
+		url :"https://www.zohoapis.in/crm/v2/Contacts/" + existingContactId
+		type :put
+		body:payload.toString()
+		headers:headers_map
+	];
+	info updateContactResp;
+}
+}

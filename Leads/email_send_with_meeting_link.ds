@@ -1,0 +1,20 @@
+void automation.email_send_with_meeting_link(Int lead_id)
+{
+lead_id = zoho.crm.getRecordById("Leads",lead_id);
+//info lead_id;
+full_name = lead_id.getJSON("Full_Name");
+//info full_name;
+booking_id = lead_id.getJSON("Booking_ID");
+//info "Booking Id =  " + booking_id;
+meeting_url = lead_id.getJSON("Meeting_URL");
+//info "Meeting URL =  " + meeting_url ;
+customer_email = lead_id.getJSON("Email");
+//info "Customer Email = " + customer_email ;
+sendmail
+[
+	from :zoho.adminuserid
+	to :customer_email
+	subject :"Your Event is Confirmed! Here are Your Meeting Details with Booking (ID:" + booking_id + ")"
+	message :"<p><b>Dear " + full_name + ",</b><br></p><p>We are pleased to inform you that your event status has been confirmed. Below are the details of your upcoming meeting:<br></p><h3>Event Details:<span><br></span></h3><ul><li><b>Booking ID:</b>  " + booking_id + "<br></li><li><b>Meeting Link:</b> " + meeting_url + "<br></li></ul><p>Please ensure that you join the meeting at the scheduled time. If you have any questions or need further assistance, feel free to reach out to us.<br></p><p>Thank you for choosing us, and we look forward to a successful meeting.<br></p><p></p><div>Best regards,<br></div><div>CEO<br></div><div><span style='color: rgb(0, 0, 0); font-family: PuviSemiBold, Roboto, sans-serif; font-size: 16.0714px; font-style: normal; font-variant-ligatures: no-contextual; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: left; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: nowrap; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; display: inline !important; float: none;'>Plymouth Rock Travel Partners</span><br></div><div>[Contact Information]<br></div><p></p><div><br></div>"
+]
+}

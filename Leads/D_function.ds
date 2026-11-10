@@ -1,0 +1,21 @@
+void automation.D_function(Int id)
+{
+leadId = input.id;
+leadInfo = zoho.crm.getRecordById("Leads",leadId);
+email = leadInfo.get("Email");
+name = leadInfo.get("Full_Name");
+if(email != null)
+{
+	mailSubject = "Welcome to Our Portal!";
+	portalLink = "https://testdevelopment6185.zohocreatorportal.in";
+	mailContent = "Hi " + name + ",<br><br>You are invited to join our portal. Click the link below to register:<br>";
+	mailContent = mailContent + "<a href='" + portalLink + "'>Join Portal</a>";
+	sendmail
+	[
+		from :zoho.adminuserid
+		to :email
+		subject :mailSubject
+		message :mailContent
+	]
+}
+}

@@ -1,0 +1,37 @@
+void automation.convert_leads_to_deals_13(int leadId)
+{
+// Get lead record
+leadDetails = zoho.crm.getRecordById("Leads",leadId);
+info leadDetails;
+customEmail = leadDetails.get("Custom_Email1");
+lastName = leadDetails.get("Last_Name");
+info customEmail;
+info lastName;
+// Safety checks
+if(lastName != null && customEmail != null)
+{
+	// Prepare deal
+	dealMap = Map();
+	dealMap.put("Deal_Name",lastName + " Deal");
+	dealMap.put("Custom_Email",customEmail);
+	// Only if Deals has this custom field
+	info dealMap;
+	// Prepare contact
+	contactMap = Map();
+	contactMap.put("Last_Name",lastName);
+	//contactMap.put("Custom_Email", customEmail); // Custom field in Contacts
+	info contactMap;
+	convertMap = Map();
+	convertMap.put("overwrite",true);
+	convertMap.put("notify_lead_owner",false);
+	convertMap.put("notify_new_entity_owner",false);
+	convertMap.put("Deals",dealMap);
+	convertMap.put("Contacts",contactMap);
+	conversion = zoho.crm.convertLead(leadId,convertMap);
+	info conversion;
+}
+else
+{
+	info "Missing Last Name or Custom Email.";
+}
+}

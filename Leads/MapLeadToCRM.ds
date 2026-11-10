@@ -1,0 +1,40 @@
+void automation.MapLeadToCRM(Int lead_id)
+{
+leaddetails = zoho.crm.getRecordById("Leads",lead_id);
+info leaddetails;
+company_name = ifnull(leaddetails.get("Company_Name"),"");
+account_id = null;
+// 🏢 Step 1: Account Mapping (Only if Company_Name is provided)
+if(company_name != "")
+{
+	mapAcc = Map();
+	mapAcc.put("Account_Name",company_name);
+	responseAcc = zoho.crm.createRecord("Accounts",mapAcc);
+	info responseAcc;
+	account_id = ifnull(responseAcc.get("id"),null);
+}
+// 📞 Step 2: Contact Always Created
+mapCon = Map();
+mapCon.put("Last_Name",leaddetails.get("Last_Name"));
+mapCon.put("Email",leaddetails.get("Email"));
+mapCon.put("lead_lookup",lead_id);
+if(account_id != null)
+{
+	mapCon.put("Account_Name",account_id);
+}
+responseCon = zoho.crm.createRecord("Contacts",mapCon);
+info responseCon;
+contact_id = ifnull(responseCon.get("id"),null);
+// 📋 Step 3: Deal Always Created
+mapDeal = Map();
+mapDeal.put("Deal_Name",leaddetails.get("Last_Name") + " Deal");
+mapDeal.put("Stage","Qualification");
+mapDeal.put("lead_lookup",lead_id);
+mapDeal.put("Contact_Name",contact_id);
+if(account_id != null)
+{
+	mapDeal.put("Account_Name",account_id);
+}
+responseDeal = zoho.crm.createRecord("Deals",mapDeal);
+info responseDeal;
+}

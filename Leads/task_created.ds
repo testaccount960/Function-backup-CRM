@@ -1,0 +1,20 @@
+void automation.task_created(Int lead_id)
+{
+lead_id = zoho.crm.getRecordById("Leads",lead_id);
+//info lead_id;
+full_name = lead_id.getJSON("Full_Name");
+//info full_name;
+booking_id = lead_id.getJSON("Booking_ID");
+//info "Booking Id =  " + booking_id;
+customer_email = lead_id.getJSON("Email");
+//info "Customer Email = " + customer_email ;
+lead_subject = lead_id.getJSON("Subject");
+//info lead_subject;
+booking_date = lead_id.getJSON("Booking_Date_And_Time");
+//info booking_date;
+task_map = Map();
+other_map = Map();
+task_map.put("Subject",lead_subject);
+craete_task = zoho.crm.createRecord("Tasks",task_map,other_map,"crm");
+info craete_task;
+}

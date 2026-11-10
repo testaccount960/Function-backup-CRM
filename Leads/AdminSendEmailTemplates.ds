@@ -1,0 +1,72 @@
+void automation.AdminSendEmailTemplates(int lead_id)
+{
+// ── 1. Fetch lead details ──────────────────────────────────────────────
+lead_details = zoho.crm.getRecordById("Leads",lead_id);
+lead_name = lead_details.getJSON("Full_Name");
+lead_email = lead_details.getJSON("Email");
+lead_owner = lead_details.getJSON("Owner");
+lead_owner_name = lead_owner.getJSON("name");
+lead_owner_email = lead_owner.getJSON("email");
+info "Lead: " + lead_name + " | Email: " + lead_email;
+// ── 2. Fetch junction records from multilookup ─────────────────────────
+related_templates = zoho.crm.getRelatedRecords("Admin_Templates42","Leads",lead_id);
+info "Junction records count: " + related_templates.size();
+if(related_templates == null || related_templates.size() == 0)
+{
+	info "No templates selected for lead: " + lead_id;
+	return;
+}
+// ── 3. Build request base ──────────────────────────────────────────────
+mailurl = "https://www.zohoapis.in/crm/v3/Leads/" + lead_id + "/actions/send_mail";
+requestHeaders = Map();
+requestHeaders.put("Content-Type","application/json");
+fromMap = Map();
+fromMap.put("user_name",lead_owner_name);
+fromMap.put("email",lead_owner_email);
+toMap = Map();
+toMap.put("user_name",lead_name);
+toMap.put("email",lead_email);
+toList = List();
+toList.add(toMap);
+// ── 4. Loop over each junction record ─────────────────────────────────
+for each  junction in related_templates
+{
+	// Step A: Extract the Admin_Templates record ID from the junction
+	// Your JSON shows: "Templates": {"name": "Lead is created", "id": "577983000024041131"}
+	templates_lookup = junction.getJSON("Templates");
+	admin_tmpl_name = templates_lookup.getJSON("name");
+	admin_tmpl_rec_id = templates_lookup.getJSON("id");
+	info "Found template '" + admin_tmpl_name + "' with record ID: " + admin_tmpl_rec_id;
+	// Step B: Fetch the full Admin_Templates record to get Template_ID
+	admin_tmpl_record = zoho.crm.getRecordById("Admin_Templates",admin_tmpl_rec_id);
+	zoho_template_id = admin_tmpl_record.getJSON("Template_ID");
+	info "Template_ID for '" + admin_tmpl_name + "': " + zoho_template_id;
+	if(zoho_template_id == null || zoho_template_id == "")
+	{
+		info "Skipping '" + admin_tmpl_name + "' — Template_ID is empty.";
+		continue;
+	}
+	// ── 5. Build the send_mail payload ────────────────────────────────
+	templateMap = Map();
+	templateMap.put("id",zoho_template_id);
+	mailMap = Map();
+	mailMap.put("from",fromMap);
+	mailMap.put("to",toList);
+	mailMap.put("template",templateMap);
+	dataList = List();
+	dataList.add(mailMap);
+	mailData = Map();
+	mailData.put("data",dataList);
+	info "Sending '" + admin_tmpl_name + "' (Template_ID: " + zoho_template_id + ") to " + lead_email;
+	// ── 6. Fire the API call ───────────────────────────────────────────
+	mailResponse = invokeurl
+	[
+		url :mailurl
+		type :POST
+		parameters:mailData.toString()
+		headers:requestHeaders
+		connection:"crm"
+	];
+	info "Response for '" + admin_tmpl_name + "': " + mailResponse;
+}
+}

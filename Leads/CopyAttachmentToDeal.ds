@@ -1,0 +1,18 @@
+void automation.CopyAttachmentToDeal(Int lead_id)
+{
+leadDetails = zoho.crm.getRecordById("Leads",lead_id);
+relatedAttachments = zoho.crm.getRelatedRecords("Attachments","Leads",lead_id);
+for each  attachment in relatedAttachments
+{
+	// 			info attachment;
+	response = invokeurl
+	[
+		url :"https://www.zohoapis.in/crm/v2/Leads/" + lead_id + "/Attachments/" + attachment.get("id")
+		type :GET
+		connection:"test_crm_conn"
+	];
+	info response;
+	// 		response.setFileName("This is a test.jpg");
+	info zoho.crm.attachFile("Deals","577983000009087006",response);
+}
+}

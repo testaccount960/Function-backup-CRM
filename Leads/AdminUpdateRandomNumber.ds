@@ -1,0 +1,13 @@
+void automation.AdminUpdateRandomNumber(Int recordId)
+{
+// Record ID (pass dynamically if using workflow or button)
+// Generate random number (example: between 1000 and 9999)
+randomNumber = randomnumber(1000,9999);
+//Prepare update map
+updateMap = Map();
+updateMap.put("Random_Number",randomNumber.toString());
+updateMap.put("Mass_Update","Done");
+// Update record
+response = zoho.crm.updateRecord("Leads",recordId,updateMap);
+info response;
+}

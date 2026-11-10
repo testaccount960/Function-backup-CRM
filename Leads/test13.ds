@@ -1,0 +1,7 @@
+void automation.test13(int leadId)
+{
+leadMap = Map();
+leadMap.put("Academic_Year","No");
+updateLead = zoho.crm.updateRecord("Leads",leadId,leadMap);
+info updateLead;
+}

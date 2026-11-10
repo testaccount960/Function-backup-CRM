@@ -1,0 +1,13 @@
+void automation.capture_user_on_statuschange(Int lead_id)
+{
+lead_details = zoho.crm.getRecordById("Leads",lead_id);
+// info lead_details;
+modifiedby_user = lead_details.getJSON("Modified_By");
+//info modifiedby_user;
+user_id = modifiedby_user.getJSON("id");
+//info user_id;
+map_user = Map();
+map_user.put("Test_User",user_id);
+update_user = zoho.crm.updateRecord("Leads",lead_id,map_user);
+info update_user;
+}

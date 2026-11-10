@@ -1,0 +1,25 @@
+void automation.MAP_RECORDS_FROM_LEAD_MODULE_TO_CREATOR(Int id)
+{
+// getrecord = zoho.crm.getRecords("Contacts");
+// info getrecord;
+getrecord = zoho.crm.getRecordById("Leads",id);
+info getrecord;
+last = getrecord.getJSON("Last_Name");
+email = getrecord.getJSON("Email");
+phone = getrecord.getJSON("Phone");
+date = getrecord.getJSON("Date").toDate();
+// info dateofbirth;
+// info first_name+ " " + last_name + " " + email;
+abc = Map();
+// abc.put("First_Name",first);
+abc.put("Name",last);
+abc.put("Email",email);
+// abc.put("Title",title);
+abc.put("Phone_Number",phone);
+abc.put("Date_field1",date);
+def = Map();
+createrecord = zoho.creator.createRecord("evoluzglobalsolutions618","client-solutions","Lead_Form",abc,def,"creator");
+info createrecord;
+// get_record = zoho.creator.getRecordById("evoluzglobalsolutions618","employee-details", "All_Contact_Information", 186975000000607007, "creator");
+// info get_record;
+}

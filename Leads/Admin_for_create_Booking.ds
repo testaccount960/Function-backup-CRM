@@ -1,0 +1,32 @@
+void automation.Admin_for_create_Booking(Int leadid)
+{
+leadDetails = zoho.crm.getRecordById("Leads",leadid);
+info leadDetails;
+FullName = ifnull(leadDetails.get("Full_Name"),"");
+// info FullName;
+Email = ifnull(leadDetails.get("Email"),"");
+Phone = ifnull(leadDetails.get("Phone"),"");
+info Phone;
+appointmentdate = leadDetails.get("Appointment_date_time");
+customerDetails = Map();
+customerDetails.put("name",FullName);
+customerDetails.put("email",Email);
+// customerDetails.put("customer_contact_no",Phone);
+response = zoho.bookings.createAppointment(203155000000304004,appointmentdate,customerDetails,203155000000032008,"Asia/Kolkata",true,"bookingcreate");
+info response;
+appointmentStatus = response.getJson("response").getJSON("returnvalue").getJSON("message");
+info appointmentStatus;
+statusmap = Map();
+if(appointmentStatus == "slot not available")
+{
+	statusmap.put("Appointment_Status",appointmentStatus);
+	uddateField = zoho.crm.updateRecord("Leads",leadid,statusmap);
+	info statusmap;
+}
+else
+{
+	statusmap.put("Appointment_Status","Appointment created Succesfully");
+	uddateField = zoho.crm.updateRecord("Leads",leadid,statusmap);
+	info statusmap;
+}
+}

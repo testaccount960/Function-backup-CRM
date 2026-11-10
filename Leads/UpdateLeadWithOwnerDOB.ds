@@ -1,0 +1,14 @@
+void automation.UpdateLeadWithOwnerDOB(int lead_id)
+{
+leadDetails = zoho.crm.getRecordById("Leads",lead_id);
+ownerId = leadDetails.get("Owner").get("id");
+ownerDetails = zoho.crm.getRecordById("users",ownerId);
+info ownerDetails;
+info ownerId;
+ownerDOB = ownerDetails.get("users").getJSON("dob");
+info ownerDOB;
+leadupdate = Map();
+leadupdate.put("Date_field_1",ownerDOB);
+updateResponse = zoho.crm.updateRecord("Leads",lead_id,leadupdate);
+info updateResponse;
+}

@@ -1,0 +1,5 @@
+void automation.Fetch_Lead_Details(int Lead_id)
+{
+Lead_details = zoho.crm.getRecordById("Leads",Lead_id);
+info Lead_details;
+}

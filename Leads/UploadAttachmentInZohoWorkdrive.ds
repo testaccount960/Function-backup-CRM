@@ -1,0 +1,25 @@
+void automation.UploadAttachmentInZohoWorkdrive(Int id)
+{
+Lead_Details = zoho.crm.getRecordById("Leads",id);
+// info Lead_Details;
+Attachment = zoho.crm.getRelatedRecords("Attachments","Leads",id);
+info Attachment;
+if(Attachment.size() > 0)
+{
+	for each  rec in Attachment
+	{
+		attachementId = rec.get("id");
+		filename = rec.get("File_Name");
+		fname = encodeurl(filename).toString();
+		downloadFile = invokeurl
+		[
+			url :"https://www.zohoapis.in/crm/v2/Leads/" + id + "/Attachments/" + attachementId
+			type :GET
+			connection:"zoho_workdrive_conn"
+		];
+		info downloadFile;
+		upload = zoho.workdrive.uploadFile(downloadFile,"xlt0ne49f51b734c8470ca59a1efbf3039a03",fname,false,"workdrive");
+		info "upload : " + upload;
+	}
+}
+}

@@ -1,0 +1,32 @@
+void automation.MailMergeOnLeadCreation(Int lead_id)
+{
+leadDetails = zoho.crm.getRecordById("Leads",lead_id);
+leadEmail = leadDetails.get("Email");
+if(leadEmail != null)
+{
+	mailMergeTemplateId = "zi1tja8a47269552e484fa5ae19c564e2fff5";
+	// 		response = zoho.writer.getAllFields(mailMergeTemplateId, "create_lead_mail_merge");
+	// 		info response;
+	data = Map();
+	data.put("id",lead_id);
+	data.put("First_Name",leadDetails.get("First_Name"));
+	data.put("First_Name",leadDetails.get("First_Name"));
+	data.put("Last_Name",leadDetails.get("Last_Name"));
+	data.put("Email",leadDetails.get("Email"));
+	data.put("Phone",leadDetails.get("Phone"));
+	param = Map();
+	param.put("subject","Welcome to Our Service");
+	param.put("merge_data",{"data":data});
+	param.put("output_format","inline");
+	param.put("recipient_email",leadDetails.get("Email"));
+	param.put("from_email","development@evoluz.in");
+	mergeResponse = invokeurl
+	[
+		url :"https://www.zohoapis.in/writer/api/v1/documents/zi1tja8a47269552e484fa5ae19c564e2fff5/merge/email"
+		type :POST
+		parameters:param
+		connection:"create_lead_mail_merge"
+	];
+	info mergeResponse;
+}
+}

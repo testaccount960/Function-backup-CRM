@@ -1,0 +1,15 @@
+void automation.SyncFileUploadToContact(Int lead_id)
+{
+leadDetails = zoho.crm.getRecordById("Leads",lead_id);
+contactMap = Map();
+contactMap.put("Last_Name",leadDetails.get("Last_Name"));
+contactMap.put("First_Name",leadDetails.get("First_Name"));
+contactMap.put("Email",leadDetails.get("Email"));
+contactMap.put("Owner",leadDetails.get("Owner").getJSON("id"));
+contactMap.put("File_Upload_new",leadDetails.get("File_Upload_new"));
+contactResponse = zoho.crm.createRecord("Contacts",contactMap);
+file = leadDetails.get("File_Upload_new");
+info file;
+info contactMap;
+info contactResponse;
+}

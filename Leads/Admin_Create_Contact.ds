@@ -1,0 +1,19 @@
+void automation.Admin_Create_Contact(Int lead_id)
+{
+leadDetails = zoho.crm.getRecordById("Leads",lead_id);
+// dateandtime = leadDetails.get("Date_and_Times_of_Event");
+// info dateandtime;
+contactMap = Map();
+contactMap.put("Last_Name",leadDetails.get("Last_Name"));
+contactMap.put("First_Name",leadDetails.get("First_Name"));
+contactMap.put("Email",leadDetails.get("Email"));
+contactMap.put("Phone",leadDetails.get("Phone"));
+contactMap.put("Owner",leadDetails.get("Owner").getJSON("id"));
+dateandtime = leadDetails.get("Date_and_Times_of_Event");
+info dateandtime;
+contactMap.put("Date_And_Time_Of_Event",dateandtime.toString("yyyy-MM-dd'T'hh:mm:ss+05:30"));
+contactMap.put("lead_lookup",lead_id);
+info contactMap;
+contactResponse = zoho.crm.createRecord("Contacts",contactMap);
+info contactResponse;
+}

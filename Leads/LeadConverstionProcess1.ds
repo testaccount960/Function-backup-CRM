@@ -1,0 +1,52 @@
+void automation.LeadConverstionProcess1(Int lead_ID)
+{
+lead_data = zoho.crm.getRecordById("Leads",lead_ID);
+info lead_data;
+get_FirstName = lead_data.get("FirstName");
+get_LastName = lead_data.get("Last Name");
+get_Email = lead_data.get("Email");
+get_phone = lead_data.get("Phone");
+company_name = lead_data.get("Company");
+account_id = "";
+create_account = false;
+//search Account is existing
+existing_accounts = zoho.crm.searchRecords("Accounts","(Account_Name:equals:" + company_name + ")");
+if(existing_accounts != null && existing_accounts.size() > 0)
+{
+	info "Existing account found.";
+	account_id = existing_accounts.get(0).get("id");
+}
+else
+{
+	info "No existing account found. Will create new one.";
+	create_account = true;
+}
+// Create Account if needed
+if(create_account)
+{
+	accountsmp = Map();
+	accountsmp.put("Account_Name",company_name);
+	accountsmp.put("Phone",get_phone);
+	account_response = zoho.crm.createRecord("Accounts",accountsmp);
+	info account_response;
+	account_id = account_response.get("id");
+}
+// Create Contact
+contactmp = Map();
+contactmp.put("Last_Name",get_LastName);
+contactmp.put("First_Name",get_FirstName);
+contactmp.put("Email",get_Email);
+contactmp.put("Phone",get_phone);
+contactmp.put("Account_Name",account_id);
+contact_response = zoho.crm.createRecord("Contacts",contactmp);
+info contact_response;
+//  Create Deal
+dealsmp = Map();
+dealsmp.put("Deal_Name",get_FirstName + " " + get_LastName);
+dealsmp.put("Stage","Qualification");
+dealsmp.put("Email",get_Email);
+dealsmp.put("Phone",get_phone);
+dealsmp.put("Account_Name",account_id);
+deal_response = zoho.crm.createRecord("Deals",dealsmp);
+info deal_response;
+}

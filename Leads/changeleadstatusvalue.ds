@@ -1,0 +1,10 @@
+void automation.changeleadstatusvalue(int lead_id)
+{
+leaddetails = zoho.crm.getRecordById("Leads",lead_id);
+if(leaddetails.get("Lead_Status") == "Not Interested")
+{
+	map1 = Map();
+	map1.put("Lead_Status","Potential Lead");
+	zoho.crm.updateRecord("Leads",lead_id,map1);
+}
+}

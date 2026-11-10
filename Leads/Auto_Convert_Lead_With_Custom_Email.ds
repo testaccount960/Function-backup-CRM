@@ -1,0 +1,28 @@
+void automation.Auto_Convert_Lead_With_Custom_Email(int leadId)
+{
+// Get lead record
+leadDetails = zoho.crm.getRecordById("Leads",leadId);
+info leadDetails;
+customEmail = leadDetails.getJSON("Custom_Email1");
+lastName = leadDetails.getJSON("Last_Name");
+// Prepare data for Deal
+dealMap = Map();
+dealMap.put("Deal_Name",lastName + " Deal");
+dealMap.put("Custom_Email",customEmail);
+// Ensure this field exists in Deals
+// Prepare data for Contact
+contactMap = Map();
+contactMap.put("Last_Name",lastName);
+contactMap.put("Custom_Email",customEmail);
+// Ensure this field exists in Contacts
+// Construct convert lead map
+convertMap = Map();
+convertMap.put("overwrite",true);
+convertMap.put("Deal",dealMap);
+// Singular: Deal
+convertMap.put("Contact",contactMap);
+// FIXED: Singular "Contact"
+// Convert Lead
+response = zoho.crm.convertLead(leadId,convertMap);
+info response;
+}

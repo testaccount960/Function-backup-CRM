@@ -1,0 +1,40 @@
+void automation.assigning_task_to_owner1(Int leadId)
+{
+// Fetch details of the current Lead record
+leadDetails = zoho.crm.getRecordById("Leads",leadId);
+// Check if the Lead record exists
+if(leadDetails.isEmpty() == false)
+{
+	// Get the Lead Owner's details
+	leadOwner = leadDetails.get("Owner");
+	leadOwnerId = leadOwner.get("id");
+	// Prepare task details
+	taskMap = Map();
+	taskMap.put("Subject","Follow-up Task for Lead Owner");
+	taskMap.put("Due_Date",zoho.currentdate.addDay(2));
+	// Due date: 2 days from today
+	taskMap.put("Owner",leadOwnerId);
+	// Assign task to Lead Owner
+	taskMap.put("What_Id",leadId);
+	taskMap.put("$se_module","Leads");
+	// Link the Task to the Lead
+	taskMap.put("Description:","This is a follow-up task for the Lead Owner.");
+	taskMap.put("Reminder","1 Days");
+	// Reminder 1 day before due date
+	// Create the Task
+	createdTask = zoho.crm.createRecord("Tasks",taskMap);
+	// Notify about the success or failure of task creation
+	if(createdTask.get("id") != null)
+	{
+		info "Task successfully created for the Lead Owner.";
+	}
+	else
+	{
+		info "Error: " + createdTask.get("message");
+	}
+}
+else
+{
+	info "Invalid Lead ID or the Lead record does not exist.";
+}
+}

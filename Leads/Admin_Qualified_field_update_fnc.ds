@@ -1,0 +1,7 @@
+void automation.Admin_Qualified_field_update_fnc(Int leadid)
+{
+leaddetails = zoho.crm.getRecordById("Leads",leadid);
+info leaddetails;
+leadStatus = leaddetails.get("Appointment_Status");
+response = zoho.crm.updateRecord("Leads",leadid,{"Appointment_Status":"Scheduled"});
+}

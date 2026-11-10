@@ -1,0 +1,45 @@
+void automation.map_title_venue_name(Int lead_details)
+{
+lead_details = zoho.crm.getRecordById("Leads",lead_details);
+//info lead_details;
+lead_id = lead_details.getJSON("id");
+info lead_id;
+lead_title = lead_details.getJSON("Designation");
+// Correcting the variable spelling from "titel" to "title"
+info lead_title;
+if(lead_title != null)
+{
+	// Trim any extra spaces before processing
+	new_title = lead_title.trim();
+	// Check if the word ' at ' is present as a standalone word
+	if(new_title.contains(" at "))
+	{
+		// Get the part after " at "
+		new_title1 = new_title.getSuffix(" at ");
+		info new_title1;
+		if(new_title1 != "")
+		{
+			// Ensure that there are words after "at"
+			venue = Map();
+			venue.put("Venue_Name",new_title1);
+			update_venue = zoho.crm.updateRecord("Leads",lead_id,venue);
+			info update_venue;
+			info "Stage1: Venue updated with text after 'at'";
+		}
+	}
+	else
+	{
+		// No "at" in the title, so use the full title as the Venue Name
+		venue1 = Map();
+		venue1.put("Venue_Name",new_title);
+		update_venue1 = zoho.crm.updateRecord("Leads",lead_id,venue1);
+		info update_venue1;
+		info "Stage2: Venue updated with full title";
+	}
+}
+else
+{
+	// If the title is null, no update can be performed
+	info "Lead title is null";
+}
+}

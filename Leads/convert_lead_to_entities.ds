@@ -1,0 +1,44 @@
+void automation.convert_lead_to_entities(Int lead_ID)
+{
+// Fetch Lead Details
+leadDetails = zoho.crm.getRecordById("Leads",lead_ID);
+firstName = leadDetails.get("First_Name");
+lastName = leadDetails.get("Last_Name");
+email = leadDetails.get("Email");
+company = leadDetails.get("Company");
+phone = leadDetails.get("Phone");
+// Create Account
+accountData = Map();
+accountData.put("Account_Name",company);
+accountData.put("Email_1",email);
+accountResponse = zoho.crm.createRecord("Accounts",accountData);
+info accountResponse;
+// Create Contact
+contactData = Map();
+contactData.put("First_Name",firstName);
+contactData.put("Last_Name",lastName);
+contactData.put("Email",email);
+contactData.put("Phone",phone);
+contactData.put("Admin_Lead_ID",leadDetails.get("id"));
+contactResponse = zoho.crm.createRecord("Contacts",contactData);
+info contactResponse;
+// Create Deal
+dealData = Map();
+dealData.put("Deal_Name",company);
+dealData.put("Stage","Qualification");
+dealData.put("Email1",email);
+dealResponse = zoho.crm.createRecord("Deals",dealData);
+info dealResponse;
+// Data Map
+dataMap = Map();
+dataMap.put("Deals",dealData);
+dataMap.put("Contacts",contactData);
+dataMap.put("Accounts",accountData);
+//Main conversion map
+conversionMap = Map();
+conversionMap.put("overwrite",true);
+conversionMap.put("data",dataMap);
+//Convert Lead
+convertResp = zoho.crm.convertLead(lead_ID,conversionMap);
+info "Convert Response: " + convertResp;
+}

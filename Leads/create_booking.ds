@@ -1,0 +1,23 @@
+void automation.create_booking(Int lead_id)
+{
+// lead_id = zoho.crm.getRecordById("Leads",lead_id);
+// //info lead_id;
+// first_name = lead_id.getJSON("First_Name");
+// //info first_name ;
+// last_name = lead_id.getJSON("Last_Name");
+// //info last_name;
+// customer_email = lead_id.getJSON("Email");
+// //info "Customer Email = " + customer_email ;
+// event_date_time = lead_id.getJSON("Booking_Date_And_Time");
+// // info event_date_time;
+// phone = lead_id.getJSON("Phone");
+// //info phone;
+// booking_map = Map();
+// other = Map();
+// booking_map.put("First_Name", full_name);
+// booking_map.put("Last_Name", last_name);
+// booking_map.put("Email", customer_email);
+// booking_map.put("Contact_Number", phone);
+// create_booking = zoho.bookings.createAppointment(203155000000321024, event_date_time, booking_map, other, <TEXT>, true, "booking")
+// info create_booking;
+}

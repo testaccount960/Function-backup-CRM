@@ -1,0 +1,68 @@
+void automation.AdminCreateDealAccountContactFromLead(Int lead_id)
+{
+lead_details = zoho.crm.getRecordById("Leads",lead_id);
+//info lead_details ;
+last_name = lead_details.get("Last_Name");
+first_name = lead_details.get("First_Name");
+email = lead_details.get("Email");
+phone = lead_details.get("Phone");
+lead_status = lead_details.get("Lead_Status");
+company = lead_details.getJSON("Company");
+full_name = first_name + " " + last_name;
+lead_street = ifNull(lead_details.getJSON("Street"),"");
+lead_city = ifNull(lead_details.getJSON("City"),"");
+lead_state = ifNull(lead_details.getJSON("State"),"");
+lead_country = ifNull(lead_details.getJSON("Country"),"");
+lead_zip_code = ifNull(lead_details.getJSON("Zip_Code"),"");
+if(lead_status == "Qualified")
+{
+	if(company != null)
+	{
+		////////////////////////////////////account mapping and creating account/////////////////////
+		account_map = Map();
+		account_map.put("Account_Name",full_name);
+		account_map.put("Email",email);
+		account_map.put("Phone",phone);
+		account_map.put("Lead",lead_id);
+		////////////Address Mapping///////////////////
+		account_map.put("Shipping_Street",lead_street);
+		account_map.put("Shipping_City",lead_city);
+		account_map.put("Shipping_State",lead_state);
+		account_map.put("Shipping_Country",lead_country);
+		account_map.put("Shipping_Code",lead_zip_code);
+		create_account = zoho.crm.createRecord("Accounts",account_map);
+		info create_account;
+	}
+	account_id = create_account.getJSON("id");
+	////////////////////////////////////contact mapping and creating contact/////////////////////
+	contact_map = Map();
+	contact_map.put("First_Name",first_name);
+	contact_map.put("Last_Name",last_name);
+	contact_map.put("Account_Name",account_id);
+	contact_map.put("Email",email);
+	contact_map.put("Phone",phone);
+	contact_map.put("Lead",lead_id);
+	////////////Address Mapping///////////////////
+	contact_map.put("Mailing_Street",lead_street);
+	contact_map.put("Mailing_City",lead_city);
+	contact_map.put("Mailing_State",lead_state);
+	contact_map.put("Mailing_Country",lead_country);
+	contact_map.put("Mailing_Zip",lead_zip_code);
+	//////////////////////////////////////////////////////////
+	create_contact = zoho.crm.createRecord("Contacts",contact_map);
+	info create_contact;
+	contact_id = create_contact.getJSON("id");
+	////////////////////////////////////deal mapping and creating deal/////////////////////
+	Deal_map = Map();
+	other = Map();
+	Deal_map.put("Deal_Name",full_name);
+	Deal_map.put("Account_Name",account_id);
+	Deal_map.put("Contact_Name",contact_id);
+	Deal_map.put("Email",email);
+	Deal_map.put("Phone",phone);
+	Deal_map.put("Lead",lead_id);
+	//////////////////////////////////////////////////////
+	create_deal = zoho.crm.createRecord("Deals",Deal_map,{"trigger":{"blueprint"}});
+	info create_deal;
+}
+}

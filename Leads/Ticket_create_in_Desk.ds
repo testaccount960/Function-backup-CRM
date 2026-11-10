@@ -1,0 +1,23 @@
+void automation.Ticket_create_in_Desk(Int Lead_Id)
+{
+Lead_deatails = zoho.crm.getRecordById("Leads",Lead_Id);
+//info Lead_deatails;
+Email = Lead_deatails.get("Email");
+info Email;
+First_Name = Lead_deatails.get("First_Name");
+Last_Name = Lead_deatails.get("Last_Name");
+Full_Name = First_Name + " " + Last_Name;
+phone = Lead_deatails.get("Phone");
+Company = Lead_deatails.get("Company");
+ticket_map = Map();
+ticket_map.put("subject","New Lead Ticket");
+ticket_map.put("email",Email);
+ticket_map.put("phone",phone);
+ticket_map.put("contactId","127711000003440001");
+ticket_map.put("departmentId","127711000000010772");
+//ticket_map.put("dueDate",today.toDate().toString("yyyy-MM-dd"));
+ticket_map.put("description","Lead created in CRM: " + Full_Name);
+create_ticket = zoho.desk.create("60024611483","tickets",ticket_map,"createticket");
+//search_ticket = zoho.desk.getRecords("60024611483", "tickets");
+info create_ticket;
+}

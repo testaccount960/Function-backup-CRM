@@ -1,0 +1,77 @@
+void automation.RecordCreateInZohoProjects(Int lead_id)
+{
+//Get api name 
+// 	resp = invokeurl
+// 	[
+// 	url :"https://projectsapi.zoho.in/restapi/portal/60026041791/projects/206682000000829009/"
+// 	type :GET
+// 	connection:"zoho_projects_api"
+// 	];
+// 	info resp;
+// Get portal id 
+// 	response = zoho.projects.getRecords("evoluzglobalsolutions618", 206682000000841071, "tasks", 0, 0, "zoho_projects_api");
+// 	info response;
+leadDetails = zoho.crm.getRecordById("Leads",lead_id);
+leadName = leadDetails.get("First_Name") + " " + leadDetails.get("Last_Name");
+email = leadDetails.get("Email");
+phone = leadDetails.get("Phone");
+leadOwner = leadDetails.get("Owner").get("name");
+// Get lead owner name
+leadOwnerEmail = leadDetails.get("Owner").get("email");
+// Get lead owner email
+// info leadOwner;
+// info leadOwnerEmail;
+leadId = leadDetails.get("id");
+// info leadId;
+leadOwner = leadDetails.get("Owner");
+projectName = leadName;
+projectDescription = "New project created from lead:\n" + "Name: " + leadName + "\n" + "Email: " + email + "\n" + "Phone: " + phone;
+projectData = Map();
+projectData.put("name",projectName);
+// Project Name
+projectData.put("description",projectDescription);
+// Project Description
+projectData.put("start_date",zoho.currentdate.toString("MM-dd-yyyy"));
+// Start Date
+projectData.put("end_date",zoho.currentdate.addDay(7).toString("MM-dd-yyyy"));
+// Example: 7 days from today
+projectData.put("description",leadId);
+response = zoho.projects.createProject("evoluzglobalsolutions618",projectData,"zoho_projects_api");
+// info response;
+projects = response.get("projects");
+// Check if project was created successfully
+projectId = projects.getJSON("id");
+if(projectId != NULL)
+{
+	info projectId;
+	// Create a task within the newly created project
+	taskData = Map();
+	taskData.put("name","Follow-up with Lead");
+	taskData.put("description","Contact the lead to discuss the project.\nLead Details:\n" + "Name: " + leadName + "\n" + "Email: " + email + "\n" + "Phone: " + phone);
+	// 								taskData.put("start_date", zoho.currentdate.toString("yyyy-MM-dd")); // Task start date
+	//     taskData.put("end_date", zoho.currentdate.addDay(2).toString("MM-dd-yyyy")); 
+	result = invokeurl
+	[
+		url :"https://projectsapi.zoho.in/restapi/portal/60026041791/projects/" + projectId + "/users/"
+		type :GET
+		connection:"zoho_projects_api"
+	];
+	info result;
+	user = result.getJSON("users");
+	info user;
+	for each  res in user
+	{
+		email = res.getJSON("email");
+		// 	info email;
+		if(leadOwnerEmail == email)
+		{
+			zpuid = res.getJSON("zpuid");
+			info zpuid;
+		}
+	}
+	taskData.put("person_responsible",zpuid);
+	// Make API call to Zoho Projects to create a task
+	taskResponse = zoho.projects.create("evoluzglobalsolutions618",projectId,"tasks",taskData,"zoho_projects_api");
+	// 	info taskResponse;
+}
+}

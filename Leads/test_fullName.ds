@@ -1,0 +1,29 @@
+void automation.test_fullName(int lead_id)
+{
+leaddetails = zoho.crm.getRecordById("Leads",lead_id);
+fullName = leaddetails.getJSON("Last_Name");
+info fullName;
+spaceIndex = fullName.indexOf(" ");
+if(spaceIndex != -1)
+{
+	firstName = fullName.substring(0,spaceIndex);
+	// Get the part before the space (First Name)
+	lastName = fullName.substring(spaceIndex + 1);
+	// Get the part after the space (Last Name)
+	info fullName;
+	info lastName;
+}
+else
+{
+	firstName = "";
+	lastName = fullName;
+}
+// 	contact = zoho.crm.getRecordById("Contacts", input.contact_id);
+contactmap = Map();
+contactmap.put("First_Name",firstName);
+contactmap.put("Last_Name",lastName);
+info contactmap;
+// Update the contact record
+updateResponse = zoho.crm.updateRecord("Leads",lead_id,contactmap);
+info updateResponse;
+}

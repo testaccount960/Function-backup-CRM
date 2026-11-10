@@ -1,0 +1,37 @@
+void automation.when_lead_Qualified_create_Co_Acc_Deal(Int id)
+{
+data = zoho.crm.getRecordById("Leads",id);
+// info data;
+leadmap = Map();
+leadmap.put("Form",id);
+update = zoho.crm.updateRecord("Leads",id,leadmap);
+first_Name = data.get("First_Name");
+last_Name = data.get("Last_Name");
+Email = data.get("Email");
+Phone = data.get("Phone");
+conmap = Map();
+conmap.put("First_Name",first_Name);
+conmap.put("Last_Name",last_Name);
+conmap.put("Email",Email);
+conmap.put("Phone",Phone);
+conmap.put("Lead",id);
+contactresponse = zoho.crm.createRecord("Contacts",conmap);
+// info contactresponse;
+Accountmap = Map();
+Accountmap.put("Account_Name",first_Name + " " + last_Name);
+Accountmap.put("Phone",Phone);
+Accountmap.put("Lead",id);
+accountresponse = zoho.crm.createRecord("Accounts",Accountmap);
+// accres = zoho.crm.getRecordById("Accounts",accountresponse.get("id"));
+// Account_name = accres.get("Account_Name");
+dealmap = Map();
+dealmap.put("Deal_Name",first_Name + " " + last_Name);
+// dealmap.put("Pipeline","Standard (Standard)");
+// dealmap.put("Stage","Qualification");
+// dealmap.put("Type","-None-");
+dealmap.put("Lead",id);
+dealmap.put("Account_Name",accountresponse.get("id"));
+info dealmap;
+dealresponse = zoho.crm.createRecord("Deals",dealmap);
+// info dealresponse;
+}

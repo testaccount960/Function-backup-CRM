@@ -1,0 +1,102 @@
+void automation.Admin_Update_Sub_Source_Picklist(int leadId)
+{
+leadRecord = zoho.crm.getRecordById("Leads",leadId);
+// info leadRecord;
+companyName = leadRecord.get("Company");
+leadSource = leadRecord.get("Lead_Source");
+info "Company Name : " + companyName;
+info "Lead Source  : " + leadSource;
+headerMap = Map();
+headerMap.put("Content-Type","application/json");
+getFieldsUrl = "https://www.zohoapis.in/crm/v8/settings/fields?module=Leads";
+fieldsResponse = invokeurl
+[
+	url :getFieldsUrl
+	type :GET
+	headers:headerMap
+	connection:"zohocrm_conn"
+];
+info fieldsResponse.get("fields").size();
+for each  field in fieldsResponse.get("fields")
+{
+	if(field.get("api_name") == "Sub_Source")
+	{
+		subSourceFieldId = field.get("id");
+		info subSourceFieldId;
+	}
+}
+getPicklistUrl = "https://www.zohoapis.in/crm/v8/settings/fields/" + subSourceFieldId + "/pick_list_values?module=Leads";
+picklistResponse = invokeurl
+[
+	url :getPicklistUrl
+	type :GET
+	headers:headerMap
+	connection:"zohocrm_conn"
+];
+info "Picklist Response: " + picklistResponse;
+existingOptions = picklistResponse.get("pick_list_values");
+// info existingOptions;
+// ------------------------------------------------------------
+// STEP 7: Check if Company Name Already Exists in Picklist
+// ------------------------------------------------------------
+alreadyExists = false;
+for each  option in existingOptions
+{
+	existingVal = option.get("display_value").toString();
+	if(existingVal == companyName)
+	{
+		alreadyExists = true;
+		info "Already exists in Sub_Source: " + companyName;
+		break;
+	}
+	else
+	{
+		info "not found with same company name";
+	}
+}
+// ------------------------------------------------------------
+// STEP 8: If Not Exists → Add as New Picklist Option
+//         PATCH /crm/v8/settings/fields/{field_id}?module=Leads
+// ------------------------------------------------------------
+if(alreadyExists == false)
+{
+	info "Adding new option: " + companyName;
+	newOption = Map();
+	newOption.put("display_value",companyName);
+	newOption.put("actual_value",companyName);
+	newOptionList = list();
+	newOptionList.add(newOption);
+	fieldBody = Map();
+	fieldBody.put("pick_list_values",newOptionList);
+	fieldsList = list();
+	fieldsList.add(fieldBody);
+	requestBody = Map();
+	requestBody.put("fields",fieldsList);
+	patchUrl = "https://www.zohoapis.in/crm/v8/settings/fields/" + subSourceFieldId + "?module=Leads";
+	patchResponse = invokeurl
+	[
+		url :patchUrl
+		type :PATCH
+		parameters:requestBody.toString()
+		headers:headerMap
+		connection:"zohocrm_conn"
+	];
+	info "PATCH Response: " + patchResponse;
+	patchResult = patchResponse.get("fields");
+	if(patchResult == null)
+	{
+		info "ERROR: Failed to add new picklist option.";
+		info "Full Response: " + patchResponse;
+		return;
+	}
+	info "SUCCESS: New option added → " + companyName;
+}
+// ------------------------------------------------------------
+// STEP 9: Update Lead Record — Set Sub_Source = Company Name
+// ------------------------------------------------------------
+updateMap = Map();
+updateMap.put("Sub_Source",companyName);
+updateResponse = zoho.crm.updateRecord("Leads",leadId,updateMap);
+info "Update Response: " + updateResponse;
+updateStatus = updateResponse.get("status");
+}

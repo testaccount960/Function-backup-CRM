@@ -1,0 +1,33 @@
+void automation.on_creation_of_a_lead_contact_acount_and_deal_created(int LeadId)
+{
+//fetch lead details
+lead_details = zoho.crm.getRecordById("Leads",LeadId);
+info lead_details;
+//create account
+account_data = Map();
+company = lead_details.get("Company");
+info company;
+account_data.put("Account_Name",company);
+accountres = zoho.crm.createRecord("Accounts",account_data);
+info accountres;
+account_id = accountres.get("id");
+info account_id;
+//create contact
+contact_data = Map();
+info contact_data.isnull();
+lastname = lead_details.get("Last_Name");
+info lastname;
+contact_data.put("Last_Name",lastname);
+contact_data.put("Account_Name",account_id);
+contactres = zoho.crm.createRecord("Contacts",contact_data);
+info contactres;
+//contact deal
+dealdata = Map();
+company = lead_details.get("Company");
+info company;
+dealdata.put("Deal_Name",company + "Deal");
+dealdata.put("Account_Name",account_id);
+dealres = zoho.crm.createRecord("Deals",dealdata);
+info dealres;
+// return "Account,contact and deal created sucessfully";
+}

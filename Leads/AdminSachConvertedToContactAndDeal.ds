@@ -1,0 +1,40 @@
+void automation.AdminSachConvertedToContactAndDeal(Int Lead_ID)
+{
+// Lead_ID = 577983000006530054;
+Lead_Detail = zoho.crm.getRecordById("Leads",Lead_ID);
+// info Lead_Detail;
+First_Name = Lead_Detail.getJSON("First_Name");
+// info First_Name;
+Last_Name = Lead_Detail.getJSON("Last_Name");
+// info Last_Name;
+Email = Lead_Detail.getJSON("Email");
+// Info Email;
+Number_of_Guests = Lead_Detail.getJSON("Number_of_Guests");
+// Info Number_of_Guests;
+Event_Venue = Lead_Detail.getJSON("Event_Venue");
+// Info Event_Venue;
+Event_Venue_Address = Lead_Detail.getJSON("Event_Venue_Address");
+// Info Event_Venue_Address;
+Type_of_Event = Lead_Detail.getJSON("Type_of_Event");
+// Info Type_of_Event;
+Date_and_Times_of_Event = Lead_Detail.getJSON("Date_and_Times_of_Event");
+info Date_and_Times_of_Event;
+///////////////////////////////////////////////Cretae Contact ///////////////////////////////////////////////////////////////////
+Contact_map = Map();
+Contact_map.put("First_Name",First_Name);
+Contact_map.put("Last_Name",Last_Name);
+Contact_map.put("Email",Email);
+Contact_map.put("No_Of_Guest",Number_of_Guests);
+Contact_map.put("Event_Venue",Event_Venue);
+Contact_map.put("Event_Address",Event_Venue_Address);
+Contact_map.put("Type_Of_Event",Type_of_Event);
+Contact_map.put("Date_And_Time_Of_Event",Date_and_Times_of_Event);
+Create_Contact = zoho.crm.createRecord("Contacts",Contact_map);
+info Create_Contact;
+//////////////////////////////////////////Create Deal ///////////////////////////////////////////////
+Deal_map = Map();
+Deal_map.put("Deal_Name",First_Name + Last_Name);
+Deal_map.put("No_Of_Guest",Number_of_Guests);
+Create_Deal = zoho.crm.createRecord("Deals",Deal_map);
+info Create_Deal;
+}

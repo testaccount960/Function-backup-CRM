@@ -1,0 +1,52 @@
+void automation.AttachmentToFileUpload(Int lead_id)
+{
+// m = Map();
+// //  		m.put("code", "1000.6495803327acdf512ff887c873070e22.3b8dd44cb3252da2c242b1c4a1fe4b94");
+//  		m.put("client_id", "1000.TXBRSTAE9C4LOUKAAUJ41JJ6FWUUZA");
+// 		m.put("refresh_token", "1000.b64139f777076c5295ced36ceb4167fb.badd59a2d66060c8962f37ab162f03fa");
+//  		m.put("client_secret", "41cdd4e33c4ef6bcd54d2152f003e598a9c12b0708");
+//  		m.put("redirect_uri", "https://www.google.com/");
+//  		m.put("grant_type","refresh_token");
+//  		res1 = invokeurl
+//  		[
+//  			url: "https://accounts.zoho.in/oauth/v2/token?"
+//  			type: POST
+//  			parameters: m
+//  		];
+//  		info res1 ;
+// 		access_token = res1.getJSON("access_token");
+// 		info access_token;
+leadDetails = zoho.crm.getRecordById("Leads",lead_id);
+relatedAttachments = zoho.crm.getRelatedRecords("Attachments","Leads",lead_id);
+if(relatedAttachments.size() > 0)
+{
+	attachmentId = relatedAttachments.get(0).getJSON("id");
+	fileResponse = invokeurl
+	[
+		url :"https://www.zohoapis.in/crm/v7/Leads/" + lead_id + "/Attachments/" + attachmentId
+		type :GET
+		connection:"oauthconnection"
+	];
+	info fileResponse;
+	fileResponse.setParamName("file");
+	response = invokeurl
+	[
+		url :"https://www.zohoapis.in/crm/v7/files"
+		type :POST
+		files:fileResponse
+		connection:"oauthconnection"
+	];
+	info response;
+	fileupload = response.get("data");
+	fileupload2 = fileupload.getJSON("details").getJSON("id");
+	info fileupload2;
+	fmp = Map();
+	fmp.put("file_id",fileupload2);
+	fileList = List();
+	fileList.add(fmp);
+	mp = Map();
+	mp.put("File_Upload_new",fileList);
+	update = zoho.crm.updateRecord("Contacts",577983000009145583,mp);
+	info update;
+}
+}

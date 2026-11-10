@@ -1,0 +1,15 @@
+void automation.convert_lead_details_into_creators(Int lead_id)
+{
+get_lead_detalis = zoho.crm.getRecordById("Leads",lead_id);
+//info get_lead_detalis ;
+get_Last_Name = get_lead_detalis.get("Last_Name");
+get_email = get_lead_detalis.get("Email");
+get_phone = get_lead_detalis.get("Phone");
+mp = Map();
+mp.put("Name",get_Last_Name);
+mp.put("Email",get_email);
+mp.put("Phone_Number",get_phone);
+mp1 = Map();
+update_creator = zoho.creator.createRecord("evoluzglobalsolutions618","testing-portal-app","Customer_Form",mp,mp1,"creator");
+info update_creator;
+}

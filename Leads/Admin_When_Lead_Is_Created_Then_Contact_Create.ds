@@ -1,0 +1,19 @@
+void automation.Admin_When_Lead_Is_Created_Then_Contact_Create(int lead_id)
+{
+lead_details = zoho.crm.getRecordById("Leads",lead_id);
+// info lead_details;
+firstName = lead_details.get("First_Name");
+info firstName;
+lastName = lead_details.get("Last_Name");
+info lastName;
+phone = lead_details.get("Phone");
+email = lead_details.get("Email");
+createContact = Map();
+createContact.put("First_Name",firstName);
+createContact.put("Last_Name",lastName);
+createContact.put("Phone",phone);
+createContact.put("Email",email);
+createContact.put("Admin_Lead_ID1",lead_id);
+createRecord = zoho.crm.createRecord("Contacts",createContact);
+info createRecord;
+}

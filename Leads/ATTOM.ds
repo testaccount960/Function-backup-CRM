@@ -1,0 +1,23 @@
+void automation.ATTOM(int lead_id)
+{
+// 	address1 = "4529 Winona Court";
+// 	address2 = "Denver, CO";
+address1 = "518 Bay breeze dr";
+address2 = "Kyle, TX";
+h = Map();
+h.put("Accept","application/json");
+h.put("apikey","eec85bef2c94eee6ce7689fd564efbbf");
+res = invokeurl
+[
+	url :"https://api.gateway.attomdata.com/propertyapi/v1.0.0/valuation/homeequity?address1=" + address1 + "&address2=" + address2 + ""
+	type :GET
+	headers:h
+];
+//info res;
+property = res.getJSON("property").getJSON("avm").getJSON("amount");
+info property;
+value1 = property.getJSON("value");
+high = property.getJSON("high");
+low = property.getJSON("low");
+update_lead = zoho.crm.updateRecord("Leads",lead_id,{"Home_Estimate_Value":value1,"High_Value":high,"Low_Value":low});
+}

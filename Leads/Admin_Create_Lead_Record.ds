@@ -1,0 +1,12 @@
+void automation.Admin_Create_Lead_Record(int lead_id)
+{
+lead_details = zoho.crm.getRecordById("Leads",lead_id);
+// 	info lead_details;
+last_name = lead_details.getJSON("Last_Name");
+info last_name;
+create_contact_map = Map();
+create_contact_map.put("Last_Name",last_name);
+create_contact_map.put("Lead",lead_id);
+create_contact_record = zoho.crm.createRecord("Contacts",create_contact_map);
+info create_contact_record;
+}

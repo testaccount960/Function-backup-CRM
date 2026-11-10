@@ -1,0 +1,24 @@
+void automation.create_related_Deal(Int recordId)
+{
+lead = zoho.crm.getRecordById("Leads",recordId);
+firstName = lead.get("First_Name");
+lastName = lead.get("Last_Name");
+info firstName;
+info lastName;
+if(firstName != null && lastName != null)
+{
+	dealName = firstName + " " + lastName;
+	info dealName;
+}
+else
+{
+	dealName = lastName;
+}
+LeadStatus = lead.get("Lead_Status");
+info LeadStatus;
+data = Map();
+data.put("Name",firstName + " " + lastName);
+data.put("leads",recordId);
+resp = zoho.crm.createRecord("sales_pipeline",data);
+info resp;
+}

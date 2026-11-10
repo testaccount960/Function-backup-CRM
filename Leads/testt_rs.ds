@@ -1,0 +1,11 @@
+void automation.testt_rs()
+{
+response = zoho.crm.getRecordById("Leads",577983000009976002);
+// info response ;
+Lead_Status = response.getjson("Lead_Status");
+info Lead_Status;
+maping = Map();
+maping.put("testtoday","Contacted");
+update = zoho.crm.updateRecord("Leads",577983000009976002,maping);
+info update;
+}

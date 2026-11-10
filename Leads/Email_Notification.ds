@@ -1,0 +1,29 @@
+void automation.Email_Notification(Int lead_id)
+{
+//fetch the lead details
+leadDetails = zoho.crm.getRecordById("Leads",lead_id);
+// 	info leadDetails;
+//extract the lead email 
+leadEmail = leadDetails.get("Email");
+// 	info leadEmail;
+if(leadEmail != null)
+{
+	mailData = {"data":{{"from":{"email":"development@evoluz.in"},"to":{{"email":leadEmail}},"template":{"id":"577983000009024160"}}}};
+	//convert mailData to json
+	body = mailData.toString();
+	//prepare request header 
+	requestHeaders = Map();
+	requestHeaders.put("Content-Type","application/json");
+	mailUrl = "https://crm.zoho.in/crm/v4/Leads/" + lead_id + "/actions/send_mail";
+	//API call
+	mailRequest = invokeurl
+	[
+		url :mailUrl
+		type :POST
+		parameters:body
+		headers:requestHeaders
+		connection:"email_notification"
+	];
+	info mailRequest;
+}
+}

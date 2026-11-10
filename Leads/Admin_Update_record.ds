@@ -1,0 +1,4 @@
+void automation.Admin_Update_record(int contact_id)
+{
+update_contact = zoho.crm.updateRecord("Contacts",contact_id,{"Companies":577983000023649091});
+}

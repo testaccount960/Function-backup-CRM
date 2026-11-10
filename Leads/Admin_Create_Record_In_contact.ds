@@ -1,0 +1,20 @@
+void automation.Admin_Create_Record_In_contact(int lead_id)
+{
+lead_details = zoho.crm.getRecordById("Leads",lead_id);
+first_name = lead_details.getJSON("First_Name");
+last_name = lead_details.getJSON("Last_Name");
+email = lead_details.getJSON("Email");
+phone = lead_details.getJSON("Phone");
+contact_map = Map();
+contact_map.put("First_Name",first_name);
+contact_map.put("Last_Name",last_name);
+contact_map.put("Email",email);
+contact_map.put("Phone",phone);
+create_contact = zoho.crm.createRecord("Contacts",contact_map);
+info create_contact;
+contact_id = create_contact.getJSON("id");
+lead_map = Map();
+lead_map.put("contact_lookup",contact_id);
+update_lead = zoho.crm.updateRecord("Leads",lead_id,lead_map);
+info update_lead;
+}

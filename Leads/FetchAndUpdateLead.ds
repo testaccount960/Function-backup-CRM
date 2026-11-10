@@ -1,0 +1,23 @@
+void automation.FetchAndUpdateLead(Int lead_id)
+{
+leadDetails = zoho.crm.getRecordById("Leads",lead_id);
+phoneNumber = leadDetails.get("Phone");
+contactRecord = zoho.crm.getRelatedRecords("Related_List_Label_1","Leads",lead_id);
+info contactRecord;
+if(contactRecord.size() > 0)
+{
+	for each  contact in contactRecord
+	{
+		record_id = contact.get("id");
+		relatedDetails = zoho.crm.getRecordById("Contacts",record_id);
+	}
+	contactDeatils = contactRecord.get(0);
+	contactEmail = contactDeatils.get("Email");
+	contactDateTime = contactDeatils.get("Date_and_Times_of_Event");
+	leadUpdate = Map();
+	leadUpdate.put("Lead_Email",contactEmail);
+	leadUpdate.put("Date_and_time_of_Event",contactDateTime);
+	updateResponse = zoho.crm.updateRecord("Leads",lead_id,leadUpdate);
+	info updateResponse;
+}
+}

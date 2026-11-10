@@ -1,0 +1,29 @@
+void automation.Send_Email_templates(Int leads_id)
+{
+// res = invokeurl
+// [
+// 	url :"https://www.zohoapis.in/crm/v8/settings/email_templates/577983000018811106"
+// 	type :GET
+// 	connection:"crm"
+// ];
+// info res;
+lead_Details = zoho.crm.getRecordById("leads",leads_id);
+owner = lead_Details.getJSON("Owner");
+owner_name = owner.getJSON("name");
+owner_email = owner.getJSON("email");
+info "email  " + owner_email;
+info "name   " + owner_name;
+lead_name = lead_Details.getJSON("Last_Name");
+lead_email = lead_Details.getJSON("Email");
+mailData = {"data":{{"from":{"user_name":owner_name,"email":owner_email},"to":{{"user_name":lead_name,"email":lead_email}},"template":{"id":"577983000018811106"}}}};
+mailUrl = "https://www.zohoapis.in/crm/v4/Leads/" + leads_id + "/actions/send_mail";
+// body = mailData.toString();
+mailRequest = invokeurl
+[
+	url :mailUrl
+	type :POST
+	parameters:mailData.toString()
+	connection:"crm"
+];
+info mailRequest;
+}

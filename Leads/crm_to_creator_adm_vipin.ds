@@ -1,0 +1,49 @@
+void automation.crm_to_creator_adm_vipin(Int id)
+{
+get_Lead = zoho.crm.getRecordById("Leads",id);
+// info get_Lead;
+get_first_name = get_Lead.get("First_Name");
+get_last_name = get_Lead.get("Last_Name");
+get_email = get_Lead.get("Email");
+get_leadsource = get_Lead.get("Lead_Source");
+get_contact = get_Lead.get("contact_lookup");
+get_fileattach = get_Lead.get("AadharCard");
+creator_data = Map();
+info get_fileattach;
+if(get_fileattach != null)
+{
+	sdf = get_fileattach.get(0);
+	file_id = sdf.getJSON("file_Id");
+	response = invokeurl
+	[
+		url :"https://www.zohoapis.in/crm/v8/files?id=" + file_id
+		type :GET
+		connection:"crm_file"
+	];
+	info response;
+	response.setParamName("file");
+	// 	creator_data.put("Upload_File",response);
+}
+// Prepare data map for Creator form
+empty = Map();
+creator_data.put("First_Name",get_first_name);
+creator_data.put("Last_Name",get_last_name);
+creator_data.put("Lead_Source",get_leadsource);
+creator_data.put("Email",get_email);
+contact = Map();
+contact.put("First_Name",get_first_name);
+contact.put("Last_Name",get_last_name);
+contacts = zoho.creator.createRecord("testdevelopment618","vipintesting","Contacts",contact,empty,"creator");
+creator_data.put("Contacts",contacts.get("data").get("ID"));
+info creator_data;
+cr = zoho.creator.createRecord("testdevelopment618","vipintesting","CRM_Leads",creator_data,empty,"creator");
+recID = cr.getJSON("data").getJSON("ID");
+response = invokeurl
+[
+	url :"https://www.zohoapis.in/creator/v2.1/data/testdevelopment618/vipintesting/report/CRM_Leads_Report/" + recID + "/Upload_File/upload"
+	type :POST
+	files:response
+	connection:"creator"
+];
+info response;
+}

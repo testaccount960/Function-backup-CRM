@@ -1,0 +1,21 @@
+void automation.updateRecord(Int leadId)
+{
+// CRM Lead record details
+// leadId = id;
+leadDetails = zoho.crm.getRecordById("Leads",leadId);
+// info leadDetails;
+creator_record_id = leadDetails.get("Creator");
+info "Creator Record ID: " + creator_record_id;
+// Prepare field mappings (only those present in Creator Form)
+updateMap = Map();
+updateMap.put("Name",leadDetails.get("Last_Name"));
+updateMap.put("Company",ifnull(leadDetails.get("Company"),""));
+updateMap.put("Phone_Number",ifnull(leadDetails.get("Phone_Number"),""));
+updateMap.put("Email",ifnull(leadDetails.get("Email"),""));
+updateMap.put("PO_Address",ifnull(leadDetails.get("Street_Address"),""));
+updateMap.put("Country",ifnull(leadDetails.get("Country"),""));
+info updateMap;
+other_map = Map();
+response = zoho.creator.updateRecord("testdevelopment618","deepanshu-test","Dtest_Report",creator_record_id,updateMap,other_map,"creator_connection");
+info "Update Response: " + response;
+}

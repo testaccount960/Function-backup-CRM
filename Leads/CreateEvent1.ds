@@ -1,0 +1,30 @@
+void automation.CreateEvent1(Int leadID)
+{
+// Fetch CRM record details
+leadID = input.leadID;
+// or input.id based on context
+record = zoho.crm.getRecordById("Leads",leadID);
+startDateTime = record.get("Start_Date");
+endDateTime = record.get("End_Date");
+eventTitle = record.get("Event_Title");
+// Format date-times in ISO format
+//start = startDateTime.toString("yyyy-MM-dd'T'HH:mm:ss'Z'");
+//end = endDateTime.toString("yyyy-MM-dd'T'HH:mm:ss'Z'");
+// Create event payload
+eventMap = Map();
+eventMap.put("title",eventTitle);
+//eventMap.put("start",start);
+//eventMap.put("end",end);
+eventMap.put("all_day",false);
+info eventMap;
+// Call Zoho Calendar API to create event
+response = invokeurl
+[
+	url :"https://calendar.zoho.com/api/v1/calendars/@primary/events"
+	type :POST
+	parameters:eventMap.toString()
+	headers:{"Content-Type":"application/json"}
+	connection:"zohocalendar_conn"
+];
+info response;
+}

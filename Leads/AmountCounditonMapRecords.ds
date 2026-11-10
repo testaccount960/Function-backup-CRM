@@ -1,0 +1,53 @@
+void automation.AmountCounditonMapRecords(Int id)
+{
+getData = zoho.crm.getRecordById("Leads",id);
+// info getData;
+Amount = getData.getJSON("Amount");
+info Amount;
+First_Name = getData.getJSON("First_Name");
+info First_Name;
+Last_Name = getData.getJSON("Last_Name");
+info Last_Name;
+email = getData.getJSON("Email");
+info email;
+if(Amount > 3000)
+{
+	MapContact = Map();
+	MapContact.put("First_Name",First_Name);
+	MapContact.put("Last_Name",Last_Name);
+	MapContact.put("Email",email);
+	info MapContact;
+	CreateRecordInLead = zoho.crm.createRecord("Contacts",MapContact);
+	info CreateRecordInLead;
+	FetchRecords = zoho.crm.searchRecords("Contacts","(Email:equals:" + email + ")");
+	info FetchRecords;
+	contact_id = FetchRecords.getJSON("id");
+	info contact_id;
+	get_record_Contacts = zoho.crm.getRecordById("Contacts",contact_id);
+	info get_record_Contacts;
+	first_Name = get_record_Contacts.getJSON("First_Name");
+	info first_Name;
+	last_Name = get_record_Contacts.getJSON("Last_Name");
+	info last_Name;
+	Email = get_record_Contacts.getJSON("Email");
+	info Email;
+	MapDeal = Map();
+	MapDeal.put("Deal_Name",first_Name);
+	// 	MapDeal.put("Deal_Name",last_Name);
+	MapDeal.put("Email",Email);
+	info MapDeal;
+	CreateRecordInDeal = zoho.crm.createRecord("Deals",MapDeal);
+	info CreateRecordInDeal;
+	info "aa";
+}
+// if (Amount < 3000)
+// {
+// 	sendmail
+// [
+// 	from: Zoho.loginuserid
+// 	to: "hfitesting2023@gmail.com"
+// 	subject: "Regarding Lead"
+// 	message: "Lead Amount is less than 3000"
+// ]
+// }
+}

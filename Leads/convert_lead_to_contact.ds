@@ -1,0 +1,18 @@
+void automation.convert_lead_to_contact(Int lead_id)
+{
+lead_id = zoho.crm.getRecordById("Leads",lead_id);
+info lead_id;
+// last_name = lead_id.getJSON("Last_Name");
+// //info last_name ;
+// email = lead_id.getJSON("Email");
+// //info email ;
+// phone = lead_id.getJSON("Phone");
+// //info "Phone>>>" + phone;
+// contact_map = Map();
+// other = Map();
+// contact_map.put("Last_Name",last_name);
+// contact_map.put("Email",email);
+// contact_map.put("Phone",phone);
+// create_contact = zoho.crm.createRecord("Contacts",contact_map,other,"crm");
+// info create_contact;
+}

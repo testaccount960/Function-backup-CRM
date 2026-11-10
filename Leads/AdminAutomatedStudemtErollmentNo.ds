@@ -1,0 +1,17 @@
+void automation.AdminAutomatedStudemtErollmentNo(Int studentId)
+{
+// studentId = 577983000006823022;
+student_detail = zoho.crm.getRecordById("Leads",studentId);
+// info student_detail;
+year = zoho.currentdate.toString("yyyy");
+info year;
+enrollmentCount = zoho.crm.getRecords("Leads",1,200,{"criteria":"Student Enrollment No != null"});
+info enrollmentCount.size();
+newID = "STU" + year + "-" + (enrollmentCount.size() + 1).toString();
+info newID;
+// // // Update the record with the generated Enrollment ID
+studentMap = Map();
+studentMap.put("Student_Enrollment_No",newID);
+updateResponse = zoho.crm.updateRecord("Leads",studentId,studentMap);
+info updateResponse;
+}

@@ -1,0 +1,98 @@
+void automation.UpdateTheRelatedRecord(Int lead_id)
+{
+// 		m = map();
+//  		m.put("code", "1000.6fd2a9b81fb7a2f046a522aae8e81b02.90a1d3c6fc9034f93c572496745b66ef");
+//  		m.put("client_id", "1000.2VSZT2B9ZIMQ7J10KRWF9X8LUPPGXY");
+//  		m.put("client_secret", "a2ad1c8d5fe4c283eb225a5f3072f92c499ba3ed71");
+//  		m.put("redirect_uri", "https://www.google.com/");
+//  		m.put("grant_type", "authorization_code");
+//  		res1 = invokeurl
+//  		[
+//  			url: "https://accounts.zoho.in/oauth/v2/token?"
+//  			type: POST
+//  			parameters: m
+//  		];
+//  		info res1 ;
+m2 = Map();
+m2.put("refresh_token","1000.f8bd9dd299863dae36550621abf93edd.3d2eca2e8658259f54e3b5861aad13e8");
+m2.put("client_id","1000.2VSZT2B9ZIMQ7J10KRWF9X8LUPPGXY");
+m2.put("client_secret","a2ad1c8d5fe4c283eb225a5f3072f92c499ba3ed71");
+m2.put("redirect_uri","https://www.google.com/");
+m2.put("grant_type","refresh_token");
+res2 = invokeurl
+[
+	url :"https://accounts.zoho.in/oauth/v2/token?"
+	type :POST
+	parameters:m2
+];
+// info res2;
+access_token = res2.getJSON("access_token");
+// info access_token;
+// leadDetails = zoho.crm.getRecordById("Leads",lead_id);
+// // info leadDetails;
+// firstName = leadDetails.get("First_Name");
+// lastName = leadDetails.get("Last_Name");
+// phone = leadDetails.get("Phone");
+// email = leadDetails.get("Email");
+// relatedContacts = zoho.crm.getRelatedRecords("Contact", "Leads", lead_id);
+// // info relatedContacts.size();
+// List1 = list();
+// for each contact in relatedContacts
+// {
+// 	contactId = contact.get("id");
+// }
+// updateData = Map();
+// 	updateData.put("First_Name", firstName);
+// 	updateData.put("Last_Name", lastName);
+// 	updateData.put("Phone", phone);
+// 	updateData.put("Email", email);
+// 	info updateData;
+// 	info contactId;
+// 	res = zoho.crm.updateRelatedRecord("Contacts",contactId, "leads", lead_id, updateData);
+// 	info res;
+// access_Token = '1000.d9fde758628685f63f5b5fca91572b4f.2b73d3c66c72ce057240e7969f34ab15';
+// leadDetails = zoho.crm.getRecordById("Leads", lead_id);
+// leadEmail = leadDetails.get("Email");
+// header = Map();
+// header.put("Authorization", "Zoho-oauthtoken" + access_token ); 
+// response = invokeurl
+// [
+// 	url: "https://www.zohoapis.in/crm/v7/Leads/actions/count?email=leadEmail"
+// 	type: GET
+// 	connection:"test_crm"
+// 	headers: header
+// ];
+// info response;
+// Fetch lead details using the Lead ID
+leadDetails = zoho.crm.getRecordById("Leads",lead_id);
+if(leadDetails != null)
+{
+	// Extract the email address from the lead
+	leadEmail = leadDetails.get("Email");
+	if(leadEmail != null && leadEmail != "")
+	{
+		// Prepare the headers for the API call
+		header = Map();
+		header.put("Authorization","Zoho-oauthtoken " + access_token);
+		// Invoke the API to count related Contacts with the same email
+		response = invokeurl
+		[
+			url :"https://www.zohoapis.in/crm/v3/Contacts/search?email=" + leadEmail
+			type :GET
+			headers:header
+			connection:"test_crm"
+		];
+		// Check the response
+		if(response.get("data") != null)
+		{
+			// Count the number of contacts with the same email
+			contactsCount = response.get("data").size();
+			// Update the Lead module with the count
+			updateFields = Map();
+			updateFields.put("Number_of_Guests",contactsCount);
+			updateResponse = zoho.crm.updateRecord("Leads",lead_id,updateFields);
+			info updateResponse;
+		}
+	}
+}
+}

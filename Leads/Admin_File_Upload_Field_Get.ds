@@ -1,0 +1,18 @@
+void automation.Admin_File_Upload_Field_Get(int lead_id)
+{
+lead_details = zoho.crm.getRecordById("Leads",lead_id);
+// 	info lead_details;
+image_upload = lead_details.get("Image_Upload_2");
+info image_upload;
+file_upload = lead_details.get("File_Upload_10");
+info file_upload;
+attach_id = file_upload.getJSON("attachment_Id");
+info attach_id;
+crpufile = invokeurl
+[
+	url :"https://www.zohoapis.in/crm/v2/Leads/" + lead_id + "/Attachments/" + attach_id
+	type :GET
+	connection:"crm"
+];
+info crpufile;
+}
