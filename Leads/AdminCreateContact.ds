@@ -1,0 +1,27 @@
+void automation.AdminCreateContact(Int leadID)
+{
+///getRecord///
+response = zoho.crm.getRecordById("Leads",leadID);
+// 	info response;
+///varible///
+lastName = response.getJSON("Last_Name");
+info lastName;
+firstName = response.getJSON("First_Name");
+info firstName;
+email = response.getJSON("Email");
+info email;
+cadenceStatus = "Not Started";
+///mapping///
+createRecordMap = Map();
+///key value pair///
+createRecordMap.put("First_Name",lastName);
+createRecordMap.put("Last_Name",firstName);
+createRecordMap.put("Email",email);
+mergeName = firstName + "" + lastName;
+createRecordMap.put("cadences_Status",cadenceStatus);
+createRecordMap.put("Lead_Name",leadID);
+// createRecordMap.put("Account_Name","577983000029669197");
+///create record/////
+createContact = zoho.crm.createRecord("Contacts",createRecordMap);
+info createContact;
+}
